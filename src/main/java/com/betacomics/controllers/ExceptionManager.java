@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.betacomics.dto.output.ResponseDTO;
-import com.betacomics.services.interfaces.MessageServices;
+import com.betacomics.services.interfaces.MessageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,13 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 public class ExceptionManager {
 	
-	private final MessageServices messageS;
+	private final MessageService messageService;
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResponseDTO> handleException(Exception e){
 		return ResponseEntity.badRequest()
 				.body(ResponseDTO.builder()
-						.message(messageS.get(e.getMessage()))
+						.message(messageService.get(e.getMessage()))
 						.build()
 						);
 	}
@@ -36,11 +36,11 @@ public class ExceptionManager {
 	                .stream()
 	                .findFirst()
 	                .map(FieldError::getDefaultMessage)
-	                .orElse("Errore di validazione");
+	                .orElse("Validation Error");
 
 		  return ResponseEntity.badRequest()
 					.body(ResponseDTO.builder()
-							.message(messageS.get(msg))
+							.message(messageService.get(msg))
 							.build()
 							);  
 	}

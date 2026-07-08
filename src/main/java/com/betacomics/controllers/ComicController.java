@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacomics.dto.input.ComicReq;
@@ -33,8 +32,8 @@ public class ComicController {
 		return ResponseEntity.ok(comicService.list());
 	}
 	
-	@GetMapping("/getById")
-	public ResponseEntity<Object> getById(@RequestParam (required = true) Long id) throws Exception{
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
 		return ResponseEntity.ok(comicService.getById(id));
 	}
 	

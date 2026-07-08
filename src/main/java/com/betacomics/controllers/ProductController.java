@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacomics.dto.output.ResponseDTO;
-import com.betacomics.services.impl.ProductServiceImpl;
+import com.betacomics.services.interfaces.ProductService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,21 +19,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProductController {
 	
-	private final ProductServiceImpl productS;
+	private final ProductService productService;
 	
 	@GetMapping("/list")
 	public ResponseEntity<Object> list() throws Exception {
-		return ResponseEntity.ok(productS.list());
+		return ResponseEntity.ok(productService.list());
 	}
 	
 	@GetMapping("/getById/{id}")
 	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
-		return ResponseEntity.ok(productS.getById(id));
+		return ResponseEntity.ok(productService.getById(id));
 	}
 	
 	@DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
-        productS.delete(id);
+        productService.delete(id);
         return ResponseEntity.ok(ResponseDTO.builder()
                     .message("deleted...")
                     .build());
