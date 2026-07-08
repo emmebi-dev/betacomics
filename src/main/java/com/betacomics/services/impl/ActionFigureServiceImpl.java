@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ActionFigureImpl implements ActionFigureService {
+public class ActionFigureServiceImpl implements ActionFigureService {
 
 	private final ActionFigureRepository actionFigureRepository;
 	

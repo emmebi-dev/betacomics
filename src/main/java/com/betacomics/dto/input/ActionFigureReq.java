@@ -1,5 +1,6 @@
 package com.betacomics.dto.input;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
@@ -11,10 +12,10 @@ import lombok.ToString;
 @ToString
 public class ActionFigureReq extends ProductReq{
 
-	@NotNull(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid brand")
+	@NotBlank(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid brand")
 	private String brand;
 	
-	@NotNull(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid material")
+	@NotBlank(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid material")
     private String material;
 	
 	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Action figure cannot be created or updated without valid height")

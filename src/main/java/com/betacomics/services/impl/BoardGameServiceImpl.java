@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class BoardGameImpl implements BoardGameService {
+public class BoardGameServiceImpl implements BoardGameService {
 
 	private final BoardGameRepository boardGameRepository;
 	

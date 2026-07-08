@@ -21,9 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.betacom.sb.dto.output.ResponseDTO;
 import com.betacomics.dto.input.BoardGameReq;
 import com.betacomics.dto.output.BoardGameDTO;
+import com.betacomics.dto.output.ResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -87,7 +87,7 @@ public class BoardGameTest {
 		String json = result.getResponse().getContentAsString();
 		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 		
-		log.debug("BoardGame create: {}", dto.getMsg());
+		log.debug("BoardGame create: {}", dto.getMessage());
 	}
 	
 	@Test

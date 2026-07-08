@@ -17,6 +17,7 @@ import com.betacomics.product.ProductTest;
 	ProductTest.class,
 	DeleteTest.class
 })
+
 public class SuiteClass {
 
 }
