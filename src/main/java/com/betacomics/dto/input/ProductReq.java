@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,10 +34,9 @@ public class ProductReq {
     
     private String imageUrl;
     
-    @PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid weight")
+    @Positive(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid weight")
     @NotNull(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid weight")
     private Double weight;
-    
     
     private LocalDate releaseDate;
 }
