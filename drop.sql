@@ -19,3 +19,5 @@
     drop table if exists error_message cascade;
 
     drop table if exists products cascade;
+
+    drop table if exists users cascade;
