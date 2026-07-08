@@ -39,14 +39,19 @@ public class ActionFigureController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<ResponseDTO> create(@RequestBody (required = true) ActionFigureReq req) throws Exception{
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) ActionFigureReq req
+			) throws Exception{
 		actionFigureService.create(req);
 		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
 	}
 	
 	@PatchMapping("/update")
 	public ResponseEntity<ResponseDTO> update(
-		@RequestBody (required = true) @Validated(ValidationGroup.Update.class) ActionFigureReq req) throws Exception{
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class
+				) ActionFigureReq req) throws Exception{
 		actionFigureService.update(req);
 		return ResponseEntity.ok(ResponseDTO.builder()
 					.message("updated...")

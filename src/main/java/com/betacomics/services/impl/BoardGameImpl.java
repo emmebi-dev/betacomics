@@ -40,6 +40,12 @@ public class BoardGameImpl implements BoardGameService {
 		board.setBrand(req.getBrand());
 		board.setMinPlayers(req.getMinPlayers());
 		board.setMaxPlayers(req.getMaxPlayers());
+		
+		if (board.getMinPlayers() != null && board.getMaxPlayers() != null) {
+		    if (board.getMinPlayers() > board.getMaxPlayers()) {
+		        throw new RuntimeException("Minimum players cannot be greater than maximum players");
+		    }
+		}
 		board.setAveragePlayTime(req.getAveragePlayTime());
 		board.setRecommendedAge(req.getRecommendedAge());
 		
