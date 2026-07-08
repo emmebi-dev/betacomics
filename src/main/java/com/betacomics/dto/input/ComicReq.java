@@ -11,16 +11,16 @@ import lombok.ToString;
 @ToString
 public class ComicReq extends ProductReq{
 	
-	@NotNull(groups=ValidationGroup.create.class, message = "Comic cannot be created without valid author")
+	@NotNull(groups=ValidationGroup.Create.class, message = "Comic cannot be created without valid author")
 	private String author;
 	
-	@NotNull(groups=ValidationGroup.create.class, message = "Comic cannot be created without valid publisher")
+	@NotNull(groups=ValidationGroup.Create.class, message = "Comic cannot be created without valid publisher")
     private String publisher;
 	
-	@PositiveOrZero(groups= {ValidationGroup.create.class, ValidationGroup.update.class}, message = "Comic cannot be created or updated without valid volume number")
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Comic cannot be created or updated without valid volume number")
     private Integer volumeNumber;
 	
-	@PositiveOrZero(groups= {ValidationGroup.create.class, ValidationGroup.update.class}, message = "Comic cannot be created or updated without valid pages")
-    @NotNull(groups=ValidationGroup.create.class, message = "Comic cannot be created without valid pages")
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Comic cannot be created or updated without valid pages")
+    @NotNull(groups=ValidationGroup.Create.class, message = "Comic cannot be created without valid pages")
     private Integer pages;
 }

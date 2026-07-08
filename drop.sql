@@ -16,4 +16,6 @@
 
     drop table if exists comics cascade;
 
+    drop table if exists error_message cascade;
+
     drop table if exists products cascade;
