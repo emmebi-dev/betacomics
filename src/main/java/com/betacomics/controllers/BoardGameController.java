@@ -39,14 +39,19 @@ private final BoardGameService boardGameService;
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<ResponseDTO> create(@RequestBody (required = true) BoardGameReq req) throws Exception{
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) BoardGameReq req
+			) throws Exception{
 		boardGameService.create(req);
 		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
 	}
 	
 	@PatchMapping("/update")
 	public ResponseEntity<ResponseDTO> update(
-		@RequestBody (required = true) @Validated(ValidationGroup.Update.class) BoardGameReq req) throws Exception{
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class) BoardGameReq req
+		) throws Exception{
 		boardGameService.update(req);
 		return ResponseEntity.ok(ResponseDTO.builder()
 					.message("updated...")

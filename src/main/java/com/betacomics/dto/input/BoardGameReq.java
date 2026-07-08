@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -52,7 +53,7 @@ public class BoardGameReq extends ProductReq{
     @NotNull(groups=ValidationGroup.Create.class, message = "Board game cannot be created without valid average play time")
     private Integer averagePlayTime;
 	
-	@Positive(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Board game cannot be created or updated without valid recommended age")
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Board game cannot be created or updated without valid recommended age")
     @NotNull(groups=ValidationGroup.Create.class, message = "Board game cannot be created without valid recommended age")
     private Integer recommendedAge;
 }

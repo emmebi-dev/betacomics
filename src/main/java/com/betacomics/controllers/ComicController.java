@@ -39,14 +39,19 @@ public class ComicController {
 	}
 	
 	@PostMapping("/create")
-	public ResponseEntity<ResponseDTO> create(@RequestBody (required = true) ComicReq req) throws Exception{
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) ComicReq req
+			) throws Exception{
 		comicService.create(req);
 		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
 	}
 	
 	@PatchMapping("/update")
 	public ResponseEntity<ResponseDTO> update(
-		@RequestBody (required = true) @Validated(ValidationGroup.Update.class) ComicReq req) throws Exception{
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class
+				) ComicReq req) throws Exception{
 		comicService.update(req);
 		return ResponseEntity.ok(ResponseDTO.builder()
 					.message("updated...")
