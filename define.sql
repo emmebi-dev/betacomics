@@ -28,6 +28,12 @@
         primary key (product_id)
     );
 
+    create table error_message (
+        message varchar(100) not null,
+        code varchar(255) not null,
+        primary key (code)
+    );
+
     create table products (
         price numeric(10,2) not null,
         release_date date,

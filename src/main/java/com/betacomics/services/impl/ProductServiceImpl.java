@@ -9,6 +9,7 @@ import com.betacomics.maps.ProductMap;
 import com.betacomics.repositories.ProductRepository;
 import com.betacomics.services.interfaces.ProductService;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,7 @@ public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository pRep;
 	
+	@Transactional
 	@Override
 	public void delete(Long id) {
 		log.debug("delete {}", id);

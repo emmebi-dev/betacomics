@@ -1,0 +1,146 @@
+package com.betacomics.boardGame;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.betacom.sb.dto.output.ResponseDTO;
+import com.betacomics.dto.input.BoardGameReq;
+import com.betacomics.dto.output.BoardGameDTO;
+
+import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+@Slf4j
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class BoardGameTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	private static Long Id;
+	
+	@Test
+	@Order(1)
+	public void createBoardGameTest() throws Exception{
+		log.debug("createBoardGameTest");
+		
+		BoardGameReq req = new BoardGameReq();
+		
+		req.setName("ma");
+        req.setDescription("dffgh");
+        req.setPrice(new BigDecimal("49.99"));
+        req.setStockQuantity(3);
+        req.setImageUrl("dfgbg");
+        req.setWeight(100.5);
+        req.setReleaseDate(LocalDate.of(2026, 7, 8));
+        
+        req.setBrand("asddf");
+        req.setMinPlayers(2);
+        req.setMaxPlayers(12);
+        req.setAveragePlayTime(50);
+        req.setRecommendedAge(18);
+        
+        
+		mockMvc.perform(post("/boardGame/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(2)
+	public void createBoardGameTestError() throws Exception{
+		log.debug("createBoardGameTestError");
+		BoardGameReq req = new BoardGameReq();
+		
+		MvcResult result =  mockMvc.perform(post("/boardGame/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				)
+		.andExpect(status().isBadRequest())		 
+		.andReturn();
+		
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		
+		log.debug("BoardGame create: {}", dto.getMsg());
+	}
+	
+	@Test
+	@Order(3)
+	public void listBoardGameTest() throws Exception{
+		log.debug("listBoardGameTest");
+		
+		MvcResult result = mockMvc.perform(get("/boardGame/list"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		List<BoardGameDTO> lB = objectMapper.readValue(
+	            json,
+	            new TypeReference<List<BoardGameDTO>>() {}
+	    );
+		
+		assertFalse(lB.isEmpty());
+		
+		lB.forEach(b -> log.debug(b.toString()));
+		
+		Id = lB.get(0).getId();
+	}
+	
+	@Test
+	@Order(4)
+	public void updateBoardGameTest() throws Exception{
+		log.debug("updateBoardGameTest");
+
+		BoardGameReq req = new BoardGameReq();
+		req.setId(Id);
+		req.setBrand("ciao");
+
+		mockMvc.perform(patch("/boardGame/update")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(5)
+	public void getById() throws Exception{
+		log.debug("getById");
+		
+		MvcResult result = mockMvc.perform(get("/boardGame/getById").param("id", Id.toString()))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		BoardGameDTO a = objectMapper.readValue(json,BoardGameDTO.class);
+		
+		log.debug(a.toString());
+	} 
+}

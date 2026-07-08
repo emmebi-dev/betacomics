@@ -26,12 +26,12 @@ public class ProductController {
 		return ResponseEntity.ok(productS.list());
 	}
 	
-	@GetMapping("getById/{id}")
+	@GetMapping("/getById/{id}")
 	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
 		return ResponseEntity.ok(productS.getById(id));
 	}
 	
-	@DeleteMapping("delete/{id}")
+	@DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
         productS.delete(id);
         return ResponseEntity.ok(ResponseDTO.builder()
