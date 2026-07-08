@@ -6,7 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.betacom.sb.dto.output.ResponseDTO;
+import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.MessageServices;
 
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class ExceptionManager {
 	public ResponseEntity<ResponseDTO> handleException(Exception e){
 		return ResponseEntity.badRequest()
 				.body(ResponseDTO.builder()
-						.msg(messageS.get(e.getMessage()))
+						.message(messageS.get(e.getMessage()))
 						.build()
 						);
 	}
@@ -40,7 +40,7 @@ public class ExceptionManager {
 
 		  return ResponseEntity.badRequest()
 					.body(ResponseDTO.builder()
-							.msg(messageS.get(msg))
+							.message(messageS.get(msg))
 							.build()
 							);  
 	}

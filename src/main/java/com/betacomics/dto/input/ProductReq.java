@@ -24,17 +24,17 @@ public class ProductReq {
     private String description;
 	
     @PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid price")
-    @NotBlank(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid price")
+    @NotNull(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid price")
     private BigDecimal price;
     
     @PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid stock quantity")
-    @NotBlank(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid stock quantity")
+    @NotNull(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid stock quantity")
     private Integer stockQuantity;
     
     private String imageUrl;
     
     @PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid weight")
-    @NotBlank(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid weight")
+    @NotNull(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid weight")
     private Double weight;
     
     

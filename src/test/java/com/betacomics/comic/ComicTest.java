@@ -21,9 +21,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.betacom.sb.dto.output.ResponseDTO;
 import com.betacomics.dto.input.ComicReq;
 import com.betacomics.dto.output.ComicDTO;
+import com.betacomics.dto.output.ResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -85,7 +85,7 @@ public class ComicTest {
 		String json = result.getResponse().getContentAsString();
 		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 		
-		log.debug("Comic create: {}", dto.getMsg());
+		log.debug("Comic create: {}", dto.getMessage());
 	}
 	
 	@Test

@@ -21,7 +21,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.betacom.sb.dto.output.ResponseDTO;
+import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.dto.input.ActionFigureReq;
 import com.betacomics.dto.output.ActionFigureDTO;
 
@@ -88,7 +88,7 @@ public class ActionFigureTest {
 		String json = result.getResponse().getContentAsString();
 		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
 		
-		log.debug("ActionFigure create: {}", dto.getMsg());
+		log.debug("ActionFigure create: {}", dto.getMessage());
 	}
 	
 	@Test

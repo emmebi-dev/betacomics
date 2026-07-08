@@ -146,11 +146,6 @@
         </dependency>
 
         <!-- Dipendenza esterna -->
-        <dependency>
-            <groupId>com.betacom</groupId>
-            <artifactId>vehicle_SB_JPA</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
 
     </dependencies>
 
