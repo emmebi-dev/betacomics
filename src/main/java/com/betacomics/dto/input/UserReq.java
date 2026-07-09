@@ -1,5 +1,7 @@
 package com.betacomics.dto.input;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -25,4 +27,10 @@ public class UserReq {
 
 	@NotNull(groups = ValidationGroup.Create.class, message = "User cannot be updated without valid isAdmin")
 	private Boolean isAdmin;
+	
+	@NotNull(groups = ValidationGroup.Create.class, message = "User cannot be created without valid Cart")
+	private CartReq cart;
+	
+	@NotNull(groups = ValidationGroup.Create.class, message = "User cannot be updated without valid orders")
+	private List<OrderReq> orders;
 }

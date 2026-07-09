@@ -21,10 +21,10 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public CartDTO create() {
+    public void create() {
         log.debug("Creating a new permanent cart");
         Cart cart = new Cart();
-        return CartMap.buildCartDTO(cartRepository.save(cart));
+        cartRepository.save(cart);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class CartServiceImpl implements CartService {
 
     @Transactional
     @Override
-    public CartDTO clear(Long id) {
+    public void clear(Long id) {
         log.debug("Clearing content of cart with id: {}", id);
         
         Cart cart = cartRepository.findById(id)
@@ -45,6 +45,6 @@ public class CartServiceImpl implements CartService {
         
         cart.getItems().clear();
         
-        return CartMap.buildCartDTO(cartRepository.save(cart));
+        cartRepository.save(cart);
     }
 }

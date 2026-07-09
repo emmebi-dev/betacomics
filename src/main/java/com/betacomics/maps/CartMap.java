@@ -1,9 +1,9 @@
 package com.betacomics.maps;
 
-import java.util.List;
 import com.betacomics.dto.input.CartReq;
 import com.betacomics.dto.output.CartDTO;
 import com.betacomics.models.Cart;
+import com.betacomics.models.User;
 
 public class CartMap {
 
@@ -13,15 +13,17 @@ public class CartMap {
 
         return CartDTO.builder()
                 .id(cart.getId())
+                .user(cart.getUser())
                 .items(CartItemMap.buildCartItemDTOList(cart.getItems()))
                 .build();
     }
 
-    public static Cart toEntity(CartReq req) {
+    public static Cart toEntity(CartReq req, User user) throws Exception {
         if (req == null) return null;
 
         return Cart.builder()
                 .id(req.getId())
+                .user(user)
                 .build();
     }
 }
