@@ -1,26 +1,25 @@
 package com.betacomics.dto.output;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UserDTO {
+public class OrderItemDTO {
+   
 	private Long id;
-	private String username;
-	private String email;
-	private String password;
-	private Boolean isAdmin;
-	private CartDTO cart;
-	private List<OrderDTO> orders;
+	private ProductDTO product;
+	private BigDecimal priceAtPurchase;
+	private Integer quantity;
+    private Long orderId;
 }

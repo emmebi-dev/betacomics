@@ -1,12 +1,11 @@
 package com.betacomics.services.impl;
 
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.betacomics.dto.input.CartItemReq;
-import com.betacomics.dto.output.CartDTO;
-import com.betacomics.maps.CartMap;
 import com.betacomics.models.Cart;
 import com.betacomics.models.CartItem;
 import com.betacomics.models.Product;
@@ -29,7 +28,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Transactional
     @Override
-    public CartDTO addItem(CartItemReq req) {
+    public void addItem(CartItemReq req) {
         log.debug("Adding product {} to cart {}", req.getProductId(), req.getCartId());
 
         Cart cart = cartRepository.findById(req.getCartId())
@@ -58,12 +57,12 @@ public class CartItemServiceImpl implements CartItemService {
             cart.getItems().add(newItem);
         }
 
-        return CartMap.buildCartDTO(cartRepository.save(cart));
+        cartRepository.save(cart);
     }
 
     @Transactional
     @Override
-    public CartDTO updateQuantity(CartItemReq req) {
+    public void updateQuantity(CartItemReq req) {
         log.debug("Updating quantity for cart item {}", req.getId());
 
         CartItem item = cartItemRepository.findById(req.getId())
@@ -77,16 +76,11 @@ public class CartItemServiceImpl implements CartItemService {
         }
 
         cartItemRepository.save(item);
-
-        Cart cart = cartRepository.findById(req.getCartId())
-                .orElseThrow(() -> new RuntimeException("Cart not found at id: " + req.getCartId()));
-                
-        return CartMap.buildCartDTO(cart);
     }
 
     @Transactional
     @Override
-    public CartDTO removeItem(Long cartId, Long itemId) {
+    public void removeItem(Long cartId, Long itemId) {
         log.debug("Removing cart item {} from cart {}", itemId, cartId);
 
         Cart cart = cartRepository.findById(cartId)
@@ -98,6 +92,6 @@ public class CartItemServiceImpl implements CartItemService {
             throw new RuntimeException("Item not found in this cart");
         }
 
-        return CartMap.buildCartDTO(cartRepository.save(cart));
+        cartRepository.save(cart);
     }
 }

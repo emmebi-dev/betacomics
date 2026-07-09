@@ -1,7 +1,10 @@
 package com.betacomics.dto.output;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.betacomics.enums.OrderStatus;
 import com.betacomics.models.User;
 
 import lombok.AllArgsConstructor;
@@ -17,9 +20,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class CartDTO {
-    
+public class OrderDTO {
+
     private Long id;
-    private User user;
-    private List<CartItemDTO> items;
+    private LocalDateTime orderDate;
+    private BigDecimal totalPrice;
+    private OrderStatus status;
+    private List<OrderItemDTO> items;
+    private Long userId;
+    
 }

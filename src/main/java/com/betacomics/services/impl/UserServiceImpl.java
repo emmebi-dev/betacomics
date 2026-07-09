@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.betacomics.dto.input.UserReq;
 import com.betacomics.dto.output.UserDTO;
+import com.betacomics.maps.CartMap;
 import com.betacomics.maps.UserMap;
 import com.betacomics.models.User;
 import com.betacomics.repositories.UserRepository;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class UserImpl implements UserService {
+public class UserServiceImpl implements UserService {
 
 	private final UserRepository userRepository;
 
@@ -33,6 +34,14 @@ public class UserImpl implements UserService {
 		user.setEmail(req.getEmail());
 		user.setPassword(req.getPassword());
 		user.setIsAdmin(req.getIsAdmin());
+		
+		try {
+			user.setCart(CartMap.toEntity(req.getCart(), user));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//user.setOrders(null);
 
 		userRepository.save(user);
 	}
@@ -62,6 +71,12 @@ public class UserImpl implements UserService {
 		Optional.ofNullable(req.getEmail()).ifPresent(user::setEmail);
 		Optional.ofNullable(req.getPassword()).ifPresent(user::setPassword);
 		Optional.ofNullable(req.getIsAdmin()).ifPresent(user::setIsAdmin);
+		
+		try {
+			Optional.ofNullable(CartMap.toEntity(req.getCart(), user)).ifPresent(user::setCart);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		userRepository.save(user);
 	}

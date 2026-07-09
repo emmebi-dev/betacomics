@@ -20,6 +20,8 @@ public class UserMap {
 				.email(u.getEmail())
 				.password(u.getPassword())
 				.isAdmin(u.getIsAdmin())
+				.cart(CartMap.buildCartDTO(u.getCart()))
+				.orders(OrderMap.buildOrderDTOList(u.getOrders()))
 				.build();
 	}
 }
