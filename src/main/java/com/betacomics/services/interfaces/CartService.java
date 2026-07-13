@@ -1,6 +1,5 @@
 package com.betacomics.services.interfaces;
 
-import com.betacomics.dto.input.CartReq;
 import com.betacomics.dto.output.CartDTO;
 
 public interface CartService {

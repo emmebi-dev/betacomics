@@ -1,68 +1,64 @@
 package com.betacomics.controllers;
 
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.betacomics.dto.input.OrderReq;
-import com.betacomics.dto.input.ValidationGroup;
-import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.dto.input.CheckoutRequest;
+import com.betacomics.dto.input.UpdateOrderStatusRequest;
+import com.betacomics.dto.output.OrderDTO;
 import com.betacomics.services.interfaces.OrderService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/api/v1/orders")
+@RequiredArgsConstructor
 public class OrderController {
-	
-	private final OrderService orderService;
-	
-	@GetMapping("/list")
-	public ResponseEntity<Object> list() throws Exception{
-		return ResponseEntity.ok(orderService.list());
-	}
-	
-	@GetMapping("/getById/{id}")
-	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
-		return ResponseEntity.ok(orderService.getById(id));
-	}
-	
-	@PostMapping("/create")
-	public ResponseEntity<ResponseDTO> create(
-			@Validated(ValidationGroup.Create.class)
-			@RequestBody (required = true) OrderReq req
-			) throws Exception{
-		orderService.create(req);
-		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
-	}
-	
-	@PatchMapping("/update")
-	public ResponseEntity<ResponseDTO> update(
-		@RequestBody (required = true) 
-		@Validated(ValidationGroup.Update.class
-				) OrderReq req) throws Exception{
-		orderService.update(req);
-		return ResponseEntity.ok(ResponseDTO.builder()
-					.message("updated...")
-					.build());
-	}
-	
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
-		orderService.delete(id);
-		return ResponseEntity.ok(ResponseDTO.builder()
-					.message("deleted...")
-					.build());
-	}
 
+    private final OrderService orderService;
+
+    @PostMapping("/checkout")
+    public ResponseEntity<OrderDTO> checkout(@Valid @RequestBody CheckoutRequest request) {
+        Long userId = getCurrentUserId();
+        OrderDTO order = orderService.checkout(userId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(order);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<OrderDTO>> getOrderHistory() {
+        Long userId = getCurrentUserId();
+        List<OrderDTO> history = orderService.getOrderHistory(userId);
+        return ResponseEntity.ok(history);
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderDTO> getOrderDetails(@PathVariable Long orderId) {
+        Long userId = getCurrentUserId();
+        OrderDTO order = orderService.getOrderDetails(userId, orderId);
+        return ResponseEntity.ok(order);
+    }
+
+    @PutMapping("/{orderId}/status")
+    public ResponseEntity<OrderDTO> updateOrderStatus(
+            @PathVariable Long orderId,
+            @Valid @RequestBody UpdateOrderStatusRequest request) {
+        
+        OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, request);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
+
+    private Long getCurrentUserId() {
+        return 1L;
+    }
 }

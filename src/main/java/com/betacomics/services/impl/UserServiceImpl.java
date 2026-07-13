@@ -1,95 +1,89 @@
 package com.betacomics.services.impl;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.betacomics.dto.input.UserReq;
+import com.betacomics.dto.input.RegisterRequest;
+import com.betacomics.dto.input.UpdateProfileRequest;
 import com.betacomics.dto.output.UserDTO;
-import com.betacomics.maps.CartMap;
-import com.betacomics.maps.UserMap;
+import com.betacomics.exceptions.ResourceNotFoundException;
+import com.betacomics.models.Cart;
 import com.betacomics.models.User;
 import com.betacomics.repositories.UserRepository;
 import com.betacomics.services.interfaces.UserService;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
+@Transactional
 public class UserServiceImpl implements UserService {
 
-	private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-	@Transactional
-	@Override
-	public void create(UserReq req) {
-		log.debug("create user {}", req);
-		User user = new User();
+    @Override
+    public UserDTO register(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalStateException("Questo username è già utilizzato da un altro utente.");
+        }
 
-		user.setUsername(req.getUsername());
-		user.setEmail(req.getEmail());
-		user.setPassword(req.getPassword());
-		user.setIsAdmin(req.getIsAdmin());
-		
-		try {
-			user.setCart(CartMap.toEntity(req.getCart(), user));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		//user.setOrders(null);
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalStateException("Questo indirizzo email è già registrato.");
+        }
 
-		userRepository.save(user);
-	}
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .password(request.getPassword()) // TODO: In futuro qui si userà passwordEncoder.encode()
+                .isAdmin(false)
+                .build();
 
-	@Override
-	public UserDTO getById(Long id) {
-		log.debug("get by id {}", id);
-		return UserMap.buildUserDTO(
-				userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found at id: " + id)));
-	}
+        Cart emptyCart = Cart.builder()
+                .build();
 
-	@Override
-	public List<UserDTO> list() {
-		log.debug("list");
-		return UserMap.buildUserDTOList(userRepository.findAll());
-	}
+        user.setCart(emptyCart);
 
-	@Transactional
-	@Override
-	public void update(UserReq req) {
-		log.debug("update user {}", req);
+        User savedUser = userRepository.save(user);
 
-		User user = userRepository.findById(req.getId())
-				.orElseThrow(() -> new RuntimeException("User not found at id: " + req.getId()));
+        return mapToUserDTO(savedUser);
+    }
 
-		Optional.ofNullable(req.getUsername()).ifPresent(user::setUsername);
-		Optional.ofNullable(req.getEmail()).ifPresent(user::setEmail);
-		Optional.ofNullable(req.getPassword()).ifPresent(user::setPassword);
-		Optional.ofNullable(req.getIsAdmin()).ifPresent(user::setIsAdmin);
-		
-		try {
-			Optional.ofNullable(CartMap.toEntity(req.getCart(), user)).ifPresent(user::setCart);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    @Override
+    @Transactional(readOnly = true)
+    public UserDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato con ID: " + id));
+        return mapToUserDTO(user);
+    }
 
-		userRepository.save(user);
-	}
+    @Override
+    public UserDTO updateProfile(Long id, UpdateProfileRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Impossibile aggiornare: utente non trovato con ID: " + id));
 
-	@Transactional
-	@Override
-	public void delete(Long id) {
-		log.debug("delete {}", id);
-		
-		User user = userRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("User not found for delete at id: " + id));
-		
-		userRepository.delete(user);
-	}
+        if (!user.getUsername().equalsIgnoreCase(request.getUsername()) && 
+                userRepository.existsByUsername(request.getUsername())) {
+            throw new IllegalStateException("Il nuovo username inserito è già in uso.");
+        }
 
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail()) && 
+                userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalStateException("La nuova email inserita è già in uso.");
+        }
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+
+        User updatedUser = userRepository.save(user);
+        return mapToUserDTO(updatedUser);
+    }
+
+    private UserDTO mapToUserDTO(User user) {
+        return UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .isAdmin(user.isAdmin())
+                .build();
+    }
 }

@@ -1,25 +1,19 @@
 package com.betacomics.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Getter
-@Setter
-@SuperBuilder 
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
 @Table(name = "comics")
 @PrimaryKeyJoinColumn(name = "product_id")
+@DiscriminatorValue("COMIC")
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString(callSuper = true)
 public class Comic extends Product {
 
     @Column(nullable = false)
@@ -32,5 +26,5 @@ public class Comic extends Product {
     private Integer volumeNumber;
     
     @Column(nullable = false)
-    private Integer pages;
+    private int pages;
 }

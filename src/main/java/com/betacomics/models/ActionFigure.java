@@ -1,25 +1,19 @@
 package com.betacomics.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @Entity
+@Table(name = "action_figures")
+@PrimaryKeyJoinColumn(name = "product_id")
+@DiscriminatorValue("ACTION_FIGURE")
 @Getter
 @Setter
 @SuperBuilder
-@ToString
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "action_figures")
-@PrimaryKeyJoinColumn(name = "product_id")
+@AllArgsConstructor
+@ToString(callSuper = true)
 public class ActionFigure extends Product {
 
     @Column(nullable = false)
@@ -29,12 +23,11 @@ public class ActionFigure extends Product {
     private String material;
     
     @Column(nullable = false)
-    private Double height;
+    private double height;
     
     @Column(nullable = false)
-    private Double width;
+    private double width;
     
     @Column(nullable = false)
-    private Double depth;
-    
+    private double depth;
 }

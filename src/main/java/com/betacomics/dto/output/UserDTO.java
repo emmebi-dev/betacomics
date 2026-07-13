@@ -1,13 +1,6 @@
 package com.betacomics.dto.output;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
@@ -16,11 +9,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserDTO {
-	private Long id;
-	private String username;
-	private String email;
-	private String password;
-	private Boolean isAdmin;
-	private CartDTO cart;
-	private List<OrderDTO> orders;
+    private Long id;
+    private String username;
+    private String email;
+    private boolean isAdmin;
 }
