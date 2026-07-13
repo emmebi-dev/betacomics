@@ -11,7 +11,7 @@ public interface OrderService {
 	public OrderDTO getById(Long id);
 	public List<OrderDTO> list();
 	
-	public void update(OrderReq req);
+	public void update(OrderReq req) throws Exception;
 	
 	public void delete(Long id);
 }

@@ -1,0 +1,3623 @@
+﻿
+=== FILE: BetacomicsApplication.java ===
+
+package com.betacomics;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class BetacomicsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(BetacomicsApplication.class, args);
+	}
+
+}
+
+=== FILE: ActionFigureController.java ===
+
+package com.betacomics.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.betacomics.dto.input.ActionFigureReq;
+import com.betacomics.dto.input.ValidationGroup;
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.services.interfaces.ActionFigureService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/actionFigure")
+@Slf4j
+public class ActionFigureController {
+
+	private final ActionFigureService actionFigureService;
+	
+	@GetMapping("/list")
+	public ResponseEntity<Object> list() throws Exception{
+		return ResponseEntity.ok(actionFigureService.list());
+	}
+	
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
+		return ResponseEntity.ok(actionFigureService.getById(id));
+	}
+	
+	@PostMapping("/create")
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) ActionFigureReq req
+			) throws Exception{
+		actionFigureService.create(req);
+		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
+	}
+	
+	@PatchMapping("/update")
+	public ResponseEntity<ResponseDTO> update(
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class
+				) ActionFigureReq req) throws Exception{
+		actionFigureService.update(req);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("updated...")
+					.build());
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
+		actionFigureService.delete(id);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("deleted...")
+					.build());
+	}
+}
+
+=== FILE: BoardGameController.java ===
+
+package com.betacomics.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.betacomics.dto.input.BoardGameReq;
+import com.betacomics.dto.input.ValidationGroup;
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.services.interfaces.BoardGameService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/boardGame")
+@Slf4j
+public class BoardGameController {
+
+private final BoardGameService boardGameService;
+	
+	@GetMapping("/list")
+	public ResponseEntity<Object> list() throws Exception{
+		return ResponseEntity.ok(boardGameService.list());
+	}
+	
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
+		return ResponseEntity.ok(boardGameService.getById(id));
+	}
+	
+	@PostMapping("/create")
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) BoardGameReq req
+			) throws Exception{
+		boardGameService.create(req);
+		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
+	}
+	
+	@PatchMapping("/update")
+	public ResponseEntity<ResponseDTO> update(
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class) BoardGameReq req
+		) throws Exception{
+		boardGameService.update(req);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("updated...")
+					.build());
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
+		boardGameService.delete(id);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("deleted...")
+					.build());
+	}
+}
+
+=== FILE: ComicController.java ===
+
+package com.betacomics.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.betacomics.dto.input.ComicReq;
+import com.betacomics.dto.input.ValidationGroup;
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.services.interfaces.ComicService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/comic")
+@Slf4j
+public class ComicController {
+	
+	private final ComicService comicService;
+	
+	@GetMapping("/list")
+	public ResponseEntity<Object> list() throws Exception{
+		return ResponseEntity.ok(comicService.list());
+	}
+	
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
+		return ResponseEntity.ok(comicService.getById(id));
+	}
+	
+	@PostMapping("/create")
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) ComicReq req
+			) throws Exception{
+		comicService.create(req);
+		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
+	}
+	
+	@PatchMapping("/update")
+	public ResponseEntity<ResponseDTO> update(
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class
+				) ComicReq req) throws Exception{
+		comicService.update(req);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("updated...")
+					.build());
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
+		comicService.delete(id);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("deleted...")
+					.build());
+	}
+
+}
+
+=== FILE: ExceptionManager.java ===
+
+package com.betacomics.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.services.interfaces.MessageService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequiredArgsConstructor
+@RestControllerAdvice
+public class ExceptionManager {
+	
+	private final MessageService messageService;
+	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ResponseDTO> handleException(Exception e){
+		return ResponseEntity.badRequest()
+				.body(ResponseDTO.builder()
+						.message(messageService.get(e.getMessage()))
+						.build()
+						);
+	}
+	
+	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<ResponseDTO> handleValidationException(MethodArgumentNotValidException e) {
+		  String msg = e.getBindingResult()
+	                .getFieldErrors()
+	                .stream()
+	                .findFirst()
+	                .map(FieldError::getDefaultMessage)
+	                .orElse("Validation Error");
+
+		  return ResponseEntity.badRequest()
+					.body(ResponseDTO.builder()
+							.message(messageService.get(msg))
+							.build()
+							);  
+	}
+	
+	
+}
+
+=== FILE: OrderController.java ===
+
+package com.betacomics.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.betacomics.dto.input.OrderReq;
+import com.betacomics.dto.input.ValidationGroup;
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.services.interfaces.OrderService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/order")
+public class OrderController {
+	
+	private final OrderService orderService;
+	
+	@GetMapping("/list")
+	public ResponseEntity<Object> list() throws Exception{
+		return ResponseEntity.ok(orderService.list());
+	}
+	
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
+		return ResponseEntity.ok(orderService.getById(id));
+	}
+	
+	@PostMapping("/create")
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) OrderReq req
+			) throws Exception{
+		orderService.create(req);
+		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
+	}
+	
+	@PatchMapping("/update")
+	public ResponseEntity<ResponseDTO> update(
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class
+				) OrderReq req) throws Exception{
+		orderService.update(req);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("updated...")
+					.build());
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
+		orderService.delete(id);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("deleted...")
+					.build());
+	}
+
+}
+
+=== FILE: ProductController.java ===
+
+package com.betacomics.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.services.interfaces.ProductService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/product")
+@Slf4j
+public class ProductController {
+	
+	private final ProductService productService;
+	
+	@GetMapping("/list")
+	public ResponseEntity<Object> list() throws Exception {
+		return ResponseEntity.ok(productService.list());
+	}
+	
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
+		return ResponseEntity.ok(productService.getById(id));
+	}
+	
+	@DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
+        productService.delete(id);
+        return ResponseEntity.ok(ResponseDTO.builder()
+                    .message("deleted...")
+                    .build());
+    }
+
+}
+
+=== FILE: UserController.java ===
+
+package com.betacomics.controllers;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.betacomics.dto.input.UserReq;
+import com.betacomics.dto.input.ValidationGroup;
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.services.interfaces.UserService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequiredArgsConstructor
+@Slf4j
+@RequestMapping("/user")
+public class UserController {
+
+	private final UserService userService;
+	
+	@GetMapping("/list")
+	public ResponseEntity<Object> list() throws Exception{
+		return ResponseEntity.ok(userService.list());
+	}
+	
+	@GetMapping("/getById/{id}")
+	public ResponseEntity<Object> getById(@PathVariable (required = true) Long id) throws Exception{
+		return ResponseEntity.ok(userService.getById(id));
+	}
+	
+	@PostMapping("/create")
+	public ResponseEntity<ResponseDTO> create(
+			@Validated(ValidationGroup.Create.class)
+			@RequestBody (required = true) UserReq req
+			) throws Exception{
+		userService.create(req);
+		return ResponseEntity.ok(ResponseDTO.builder().message("created...").build());
+	}
+	
+	@PatchMapping("/update")
+	public ResponseEntity<ResponseDTO> update(
+		@RequestBody (required = true) 
+		@Validated(ValidationGroup.Update.class
+				) UserReq req) throws Exception{
+		userService.update(req);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("updated...")
+					.build());
+	}
+	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<ResponseDTO> delete(@PathVariable (required = true) Long id) throws Exception{
+		userService.delete(id);
+		return ResponseEntity.ok(ResponseDTO.builder()
+					.message("deleted...")
+					.build());
+	}
+	
+}
+
+=== FILE: ActionFigureReq.java ===
+
+package com.betacomics.dto.input;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class ActionFigureReq extends ProductReq{
+
+	@NotNull(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid brand")
+	private String brand;
+	
+	@NotNull(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid material")
+    private String material;
+	
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Action figure cannot be created or updated without valid height")
+    @NotNull(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid height")
+    private Double height;
+    
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Action figure cannot be created or updated without valid width")
+    @NotNull(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid width")
+    private Double width;
+    
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Action figure cannot be created or updated without valid depth")
+    @NotNull(groups=ValidationGroup.Create.class, message = "Action figure cannot be created without valid depth")
+    private Double depth;
+}
+
+=== FILE: BoardGameReq.java ===
+
+package com.betacomics.dto.input;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class BoardGameReq extends ProductReq{
+
+	@NotNull(groups=ValidationGroup.Create.class, message = "Board game cannot be created without valid brand")
+	private String brand;
+	
+	@NotNull(
+		    groups = ValidationGroup.Create.class,
+		    message = "Board game cannot be created without valid min players"
+		)
+	@Min(
+		    value = 1,
+		    groups = {ValidationGroup.Create.class, ValidationGroup.Update.class},
+		    message = "Minimum players must be at least 1"
+		)
+	@Max(
+		    value = 20,
+		    groups = {ValidationGroup.Create.class, ValidationGroup.Update.class},
+		    message = "Minimum players cannot be greater than 20"
+		)
+	private Integer minPlayers;
+	
+	@NotNull(
+		    groups = ValidationGroup.Create.class,
+		    message = "Board game cannot be created without valid max players"
+		)
+	@Min(
+		    value = 1,
+		    groups = {ValidationGroup.Create.class, ValidationGroup.Update.class},
+		    message = "Maximum players must be at least 1"
+		)
+	@Max(
+		    value = 20,
+		    groups = {ValidationGroup.Create.class, ValidationGroup.Update.class},
+		    message = "Maximum players cannot be greater than 20"
+		)
+	private Integer maxPlayers;
+	
+	@Positive(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Board game cannot be created or updated without valid average play time")
+    @NotNull(groups=ValidationGroup.Create.class, message = "Board game cannot be created without valid average play time")
+    private Integer averagePlayTime;
+	
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Board game cannot be created or updated without valid recommended age")
+    @NotNull(groups=ValidationGroup.Create.class, message = "Board game cannot be created without valid recommended age")
+    private Integer recommendedAge;
+}
+
+=== FILE: CartItemReq.java ===
+
+package com.betacomics.dto.input;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class CartItemReq {
+
+    @NotNull(groups = ValidationGroup.Update.class, message = "CartItem cannot be updated without valid id")
+    private Long id;
+
+    @NotNull(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Cart ID is required")
+    private Long cartId;
+
+    @NotNull(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product ID is required")
+    private Long productId;
+
+    @NotNull(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Quantity is required")
+    @Positive(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Quantity must be greater than 0")
+    private Integer quantity;
+}
+
+=== FILE: CartReq.java ===
+
+package com.betacomics.dto.input;
+
+import java.util.List;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class CartReq {
+    
+    @NotNull(groups = ValidationGroup.Update.class, message = "Cart cannot be updated without valid id")
+    private Long id;
+    
+    @NotNull(groups = ValidationGroup.Create.class, message = "Cart cannot be created without valid user id")
+    private Long userId;
+
+    @Valid
+    private List<CartItemReq> items;
+}
+
+=== FILE: ComicReq.java ===
+
+package com.betacomics.dto.input;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class ComicReq extends ProductReq{
+	
+	@NotNull(groups=ValidationGroup.Create.class, message = "Comic cannot be created without valid author")
+	private String author;
+	
+	@NotNull(groups=ValidationGroup.Create.class, message = "Comic cannot be created without valid publisher")
+    private String publisher;
+	
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Comic cannot be created or updated without valid volume number")
+    private Integer volumeNumber;
+	
+	@PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Comic cannot be created or updated without valid pages")
+    @NotNull(groups=ValidationGroup.Create.class, message = "Comic cannot be created without valid pages")
+    private Integer pages;
+}
+
+=== FILE: OrderItemReq.java ===
+
+package com.betacomics.dto.input;
+
+import java.math.BigDecimal;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+
+@Getter
+@Setter
+@ToString
+public class OrderItemReq {
+	
+    @NotNull(groups = ValidationGroup.Update.class, message = "OrderItem cannot be updated without valid id")
+	private Long id;
+    
+    @NotNull(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product ID is required")
+    private Long productId;
+    
+    @NotNull(groups = ValidationGroup.Create.class, message = "User cannot be created without valid Cart")
+    @Positive(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Quantity must be greater than 0")
+	private BigDecimal priceAtPurchase;
+    
+    @NotNull(groups = ValidationGroup.Create.class, message = "User cannot be created without valid Cart")
+    @Positive(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Quantity must be greater than 0")
+	private Integer quantity;
+    
+    @NotNull(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Order ID is required")
+    private Long orderId;
+}
+
+=== FILE: OrderReq.java ===
+
+package com.betacomics.dto.input;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import com.betacomics.enums.OrderStatus;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class OrderReq {
+
+    @NotNull(groups = ValidationGroup.Update.class, message = "Order cannot be updated without valid id")
+    @Schema(description = "ID dell'ordine. Richiesto obbligatoriamente solo in fase di update.", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long id;
+	
+    @NotNull(groups = ValidationGroup.Create.class, message = "Order cannot be created without valid order date")
+    private LocalDateTime orderDate;
+    
+    @NotNull(groups = ValidationGroup.Create.class, message = "Order cannot be created without valid user id")
+    private Long userId;
+	
+    @NotNull(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Total price is required")
+    @PositiveOrZero(groups = {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Total price must be positive or zero")
+    private BigDecimal totalPrice;
+	
+    @NotNull(groups = ValidationGroup.Update.class, message = "Status is required for update")
+    private OrderStatus status;
+	
+    @NotEmpty(groups = ValidationGroup.Create.class, message = "An order must contain at least one item")
+    @Valid
+    private List<OrderItemReq> orderItems;
+    
+    
+}
+
+=== FILE: ProductReq.java ===
+
+package com.betacomics.dto.input;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class ProductReq {
+	
+	@NotNull(groups=ValidationGroup.Update.class, message = "Product cannot be updated without valid id")
+    private Long id;
+	
+	@NotBlank(groups=ValidationGroup.Create.class, message = "Product cannot be created without valid name")
+    private String name;
+	
+    private String description;
+	
+    @PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid price")
+    @NotNull(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid price")
+    private BigDecimal price;
+    
+    @PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid stock quantity")
+    @NotNull(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid stock quantity")
+    private Integer stockQuantity;
+    
+    private String imageUrl;
+    
+    @PositiveOrZero(groups= {ValidationGroup.Create.class, ValidationGroup.Update.class}, message = "Product cannot be created or updated without valid weight")
+    @NotNull(groups= {ValidationGroup.Create.class}, message = "Product cannot be created without valid weight")
+    private Double weight;
+    
+    
+    private LocalDate releaseDate;
+}
+
+=== FILE: UserReq.java ===
+
+package com.betacomics.dto.input;
+
+import java.util.List;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class UserReq {
+
+	@NotNull(groups = ValidationGroup.Update.class, message = "User cannot be updated without valid id")
+	private Long id;
+
+	@NotBlank(groups = ValidationGroup.Create.class, message = "User cannot be created without valid username")
+	private String username;
+
+	@NotBlank(groups = ValidationGroup.Create.class, message = "User cannot be created without valid email")
+	private String email;
+
+	@NotBlank(groups = ValidationGroup.Create.class, message = "User cannot be created without valid password")
+	private String password;
+
+	@NotNull(groups = ValidationGroup.Create.class, message = "User cannot be updated without valid isAdmin")
+	private Boolean isAdmin;
+	
+	@NotNull(groups = ValidationGroup.Create.class, message = "User cannot be created without valid Cart")
+	private CartReq cart;
+	
+	@NotNull(groups = ValidationGroup.Create.class, message = "User cannot be updated without valid orders")
+	private List<OrderReq> orders;
+}
+
+=== FILE: ValidationGroup.java ===
+
+package com.betacomics.dto.input;
+
+public interface ValidationGroup {
+	interface Create{}
+	interface Update{}
+}
+
+=== FILE: ActionFigureDTO.java ===
+
+package com.betacomics.dto.output;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+public class ActionFigureDTO extends ProductDTO{
+
+	private String brand;
+    private String material;
+    private Double height;
+    private Double width;
+    private Double depth;
+}
+
+=== FILE: BoardGameDTO.java ===
+
+package com.betacomics.dto.output;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@SuperBuilder
+public class BoardGameDTO extends ProductDTO{
+
+	private String brand;
+	private Integer minPlayers;
+    private Integer maxPlayers;
+    private Integer averagePlayTime;
+    private Integer recommendedAge;
+}
+
+=== FILE: CartDTO.java ===
+
+package com.betacomics.dto.output;
+
+import java.util.List;
+
+import com.betacomics.models.User;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class CartDTO {
+    
+    private Long id;
+    private User user;
+    private List<CartItemDTO> items;
+}
+
+=== FILE: CartItemDTO.java ===
+
+package com.betacomics.dto.output;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class CartItemDTO {
+
+    private Long id;
+    private Long cartId;
+    private ProductDTO product; 
+    private Integer quantity;
+}
+
+=== FILE: ComicDTO.java ===
+
+package com.betacomics.dto.output;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class ComicDTO extends ProductDTO{
+    
+	private String author;
+    private String publisher;
+    private Integer volumeNumber;
+    private Integer pages;
+}
+
+=== FILE: OrderDTO.java ===
+
+package com.betacomics.dto.output;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import com.betacomics.enums.OrderStatus;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class OrderDTO {
+
+    private Long id;
+    private LocalDateTime orderDate;
+    private BigDecimal totalPrice;
+    private OrderStatus status;
+    private List<OrderItemDTO> items;
+    private Long userId;
+    
+}
+
+=== FILE: OrderItemDTO.java ===
+
+package com.betacomics.dto.output;
+
+import java.math.BigDecimal;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class OrderItemDTO {
+   
+	private Long id;
+	private ProductDTO product;
+	private BigDecimal priceAtPurchase;
+	private Integer quantity;
+    private Long orderId;
+}
+
+=== FILE: ProductDTO.java ===
+
+package com.betacomics.dto.output;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Getter
+@Setter
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class ProductDTO {
+
+    private Long id;
+    private String name;
+    private String description;
+    private BigDecimal price;
+    private Integer stockQuantity;
+    private String imageUrl;
+    private Double weight;
+    private LocalDate releaseDate;
+}
+
+=== FILE: ResponseDTO.java ===
+
+package com.betacomics.dto.output;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ResponseDTO {
+	private String message;
+}
+
+=== FILE: UserDTO.java ===
+
+package com.betacomics.dto.output;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+public class UserDTO {
+	private Long id;
+	private String username;
+	private String email;
+	private String password;
+	private Boolean isAdmin;
+	private CartDTO cart;
+	private List<OrderDTO> orders;
+}
+
+=== FILE: OrderStatus.java ===
+
+package com.betacomics.enums;
+
+public enum OrderStatus {
+    PENDING,     
+    PAID,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED
+}
+
+=== FILE: ActionFigureMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.List;
+
+import com.betacomics.dto.output.ActionFigureDTO;
+import com.betacomics.models.ActionFigure;
+
+public class ActionFigureMap {
+
+	public static List<ActionFigureDTO> buildActionFigureDTOList(List<ActionFigure> lA){
+		return lA.stream()
+				.map(a -> buildActionFigureDTO(a)
+						).toList();
+	};
+	
+	public static ActionFigureDTO buildActionFigureDTO(ActionFigure a) {
+		return ActionFigureDTO.builder()
+				.id(a.getId())
+				.name(a.getName())
+				.description(a.getDescription())
+				.price(a.getPrice())
+				.stockQuantity(a.getStockQuantity())
+				.imageUrl(a.getImageUrl())
+				.weight(a.getWeight())
+				.releaseDate(a.getReleaseDate())
+				.brand(a.getBrand())
+				.material(a.getMaterial())
+				.height(a.getHeight())
+				.width(a.getWidth())
+				.depth(a.getDepth())
+				.build();
+	}
+}
+
+=== FILE: BoardGameMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.List;
+
+import com.betacomics.dto.output.BoardGameDTO;
+import com.betacomics.models.BoardGame;
+
+public class BoardGameMap {
+
+	public static List<BoardGameDTO> buildBoardGameDTOList(List<BoardGame> lB){
+		return lB.stream()
+				.map(b -> buildBoardGameDTO(b)
+						).toList();
+	};
+	
+	public static BoardGameDTO buildBoardGameDTO(BoardGame b) {
+		return BoardGameDTO.builder()
+				.id(b.getId())
+				.name(b.getName())
+				.description(b.getDescription())
+				.price(b.getPrice())
+				.stockQuantity(b.getStockQuantity())
+				.imageUrl(b.getImageUrl())
+				.weight(b.getWeight())
+				.releaseDate(b.getReleaseDate())
+				.brand(b.getBrand())
+				.minPlayers(b.getMinPlayers())
+				.maxPlayers(b.getMaxPlayers())
+				.averagePlayTime(b.getAveragePlayTime())
+				.recommendedAge(b.getRecommendedAge())
+				.build();
+	}
+}
+
+=== FILE: CartItemMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.List;
+import com.betacomics.dto.input.CartItemReq;
+import com.betacomics.dto.output.CartItemDTO;
+import com.betacomics.models.Cart;
+import com.betacomics.models.CartItem;
+import com.betacomics.models.Product;
+
+public class CartItemMap {
+
+    public static CartItemDTO buildCartItemDTO(CartItem item) {
+        if (item == null) return null;
+
+        return CartItemDTO.builder()
+                .id(item.getId())
+                .cartId(item.getCart() != null ? item.getCart().getId() : null)
+                .product(ProductMap.buildProductDTO(item.getProduct()))
+                .quantity(item.getQuantity())
+                .build();
+    }
+
+    public static List<CartItemDTO> buildCartItemDTOList(List<CartItem> list) {
+        if (list == null) return List.of();
+        return list.stream()
+                .map(CartItemMap::buildCartItemDTO)
+                .toList();
+    }
+
+    public static CartItem toEntity(CartItemReq req, Cart cart, Product product) {
+        if (req == null) return null;
+
+        return CartItem.builder()
+                .id(req.getId())
+                .cart(cart)
+                .product(product)
+                .quantity(req.getQuantity())
+                .build();
+    }
+}
+
+=== FILE: CartMap.java ===
+
+package com.betacomics.maps;
+
+import com.betacomics.dto.input.CartReq;
+import com.betacomics.dto.output.CartDTO;
+import com.betacomics.models.Cart;
+import com.betacomics.models.User;
+
+public class CartMap {
+
+    // Da Entity a DTO (Output)
+    public static CartDTO buildCartDTO(Cart cart) {
+        if (cart == null) return null;
+
+        return CartDTO.builder()
+                .id(cart.getId())
+                .user(cart.getUser())
+                .items(CartItemMap.buildCartItemDTOList(cart.getItems()))
+                .build();
+    }
+
+    public static Cart toEntity(CartReq req, User user) throws Exception {
+        if (req == null) return null;
+
+        return Cart.builder()
+                .id(req.getId())
+                .user(user)
+                .build();
+    }
+}
+
+=== FILE: ComicMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.List;
+
+import com.betacomics.dto.output.ComicDTO;
+import com.betacomics.models.Comic;
+
+public class ComicMap {
+	public static List<ComicDTO> buildComicDTOList(List<Comic> lC){
+		return lC.stream()
+				.map(c -> buildComicDTO(c)
+						).toList();
+	};
+	
+	public static ComicDTO buildComicDTO(Comic c) {
+		return ComicDTO.builder()
+				.id(c.getId())
+				.name(c.getName())
+				.description(c.getDescription())
+				.price(c.getPrice())
+				.stockQuantity(c.getStockQuantity())
+				.imageUrl(c.getImageUrl())
+				.weight(c.getWeight())
+				.releaseDate(c.getReleaseDate())
+				.author(c.getAuthor())
+				.publisher(c.getPublisher())
+				.volumeNumber(c.getVolumeNumber())
+				.pages(c.getPages())
+				.build();
+	}
+}
+
+=== FILE: OrderItemMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.betacomics.dto.input.OrderItemReq;
+import com.betacomics.dto.output.OrderItemDTO;
+import com.betacomics.models.Order;
+import com.betacomics.models.OrderItem;
+import com.betacomics.models.Product;
+
+public class OrderItemMap {
+	
+    public static OrderItemDTO buildOrderItemDTO(OrderItem item) {
+        if (item == null) return null;
+
+        return OrderItemDTO.builder()
+                .id(item.getId())
+                .orderId(item.getOrder() != null ? item.getOrder().getId() : null)
+                .product(ProductMap.buildProductDTO(item.getProduct()))
+                .quantity(item.getQuantity())
+                .build();
+    }
+
+    public static List<OrderItemDTO> buildOrderItemDTOList(List<OrderItem> list) {
+        if (list == null) return List.of();
+        return list.stream()
+                .map(OrderItemMap::buildOrderItemDTO)
+                .toList();
+    }
+
+}
+
+=== FILE: OrderMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.List;
+
+import com.betacomics.dto.output.OrderDTO;
+import com.betacomics.models.Order;
+
+public class OrderMap {
+	public static List<OrderDTO> buildOrderDTOList(List<Order> lO){
+		return lO.stream()
+				.map(o -> buildOrderDTO(o)
+						).toList();
+	};
+	
+	public static OrderDTO buildOrderDTO(Order o) {
+		return OrderDTO.builder()
+				.id(o.getId())
+				.userId(o.getUser() != null ? o.getUser().getId() : null)
+				.orderDate(o.getOrderDate())
+				.totalPrice(o.getTotalPrice())
+				.status(o.getStatus())
+				.items(OrderItemMap.buildOrderItemDTOList(o.getItems()))
+				.build();
+	}
+}
+
+=== FILE: ProductMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.List;
+
+import com.betacomics.dto.output.ProductDTO;
+import com.betacomics.models.Product;
+
+public class ProductMap {
+	public static List<ProductDTO> buildProductDTOList(List<Product> lP){
+		return lP.stream()
+				.map(p -> buildProductDTO(p)
+						).toList();
+	};
+	
+	public static ProductDTO buildProductDTO(Product p) {
+		return ProductDTO.builder()
+				.id(p.getId())
+				.name(p.getName())
+				.description(p.getDescription())
+				.price(p.getPrice())
+				.stockQuantity(p.getStockQuantity())
+				.imageUrl(p.getImageUrl())
+				.weight(p.getWeight())
+				.releaseDate(p.getReleaseDate())
+				.build();
+	}
+}
+
+=== FILE: UserMap.java ===
+
+package com.betacomics.maps;
+
+import java.util.List;
+
+import com.betacomics.dto.output.UserDTO;
+import com.betacomics.models.User;
+
+public class UserMap {
+	
+	public static List<UserDTO> buildUserDTOList(List<User> lU){
+		return lU.stream()
+				.map(p -> buildUserDTO(p)
+						).toList();
+	}
+	
+	public static UserDTO buildUserDTO(User u) {
+		return UserDTO.builder()
+				.id(u.getId())
+				.username(u.getUsername())
+				.email(u.getEmail())
+				.password(u.getPassword())
+				.isAdmin(u.getIsAdmin())
+				.cart(CartMap.buildCartDTO(u.getCart()))
+				.orders(OrderMap.buildOrderDTOList(u.getOrders()))
+				.build();
+	}
+}
+
+=== FILE: ActionFigure.java ===
+
+package com.betacomics.models;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Entity
+@Getter
+@Setter
+@SuperBuilder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "action_figures")
+@PrimaryKeyJoinColumn(name = "product_id")
+public class ActionFigure extends Product {
+
+    @Column(nullable = false)
+    private String brand;
+    
+    @Column(nullable = false)
+    private String material;
+    
+    @Column(nullable = false)
+    private Double height;
+    
+    @Column(nullable = false)
+    private Double width;
+    
+    @Column(nullable = false)
+    private Double depth;
+    
+}
+
+=== FILE: BoardGame.java ===
+
+package com.betacomics.models;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Entity
+@Getter
+@Setter
+@SuperBuilder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "board_games")
+@PrimaryKeyJoinColumn(name = "product_id")
+public class BoardGame extends Product {
+
+    @Column(nullable = false)
+    private String brand;
+	
+    @Column(name = "min_players", nullable = false)
+    private Integer minPlayers;
+    
+    @Column(name = "max_players", nullable = false)
+    private Integer maxPlayers;
+    
+    @Column(name = "average_play_time")
+    private Integer averagePlayTime;
+    
+    @Column(name = "recommended_age")
+    private Integer recommendedAge;
+}
+
+=== FILE: Cart.java ===
+
+package com.betacomics.models;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Builder
+@Entity
+@Getter
+@Setter
+@ToString(exclude = "items") 
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "carts")
+public class Cart {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private User user;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartItem> items = new ArrayList<>();
+}
+
+=== FILE: CartItem.java ===
+
+package com.betacomics.models;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Entity
+@Getter
+@Setter
+@SuperBuilder
+@ToString(exclude = "cart")
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "cart_items")
+public class CartItem {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @Column(nullable = false)
+    private Integer quantity;
+}
+
+=== FILE: Comic.java ===
+
+package com.betacomics.models;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Entity
+@Getter
+@Setter
+@SuperBuilder 
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "comics")
+@PrimaryKeyJoinColumn(name = "product_id")
+public class Comic extends Product {
+
+    @Column(nullable = false)
+    private String author;
+    
+    @Column(nullable = false)
+    private String publisher;
+    
+    @Column(name = "volume_number")
+    private Integer volumeNumber;
+    
+    @Column(nullable = false)
+    private Integer pages;
+}
+
+=== FILE: Message.java ===
+
+package com.betacomics.models;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table (name="error_message")
+public class Message {
+
+	@Id
+	private String code;
+	
+	@Column (nullable = false,
+			length=100)
+	private String message;
+}
+
+=== FILE: Order.java ===
+
+package com.betacomics.models;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.betacomics.enums.OrderStatus;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "orders")
+public class Order {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+	
+    @Column(name = "order_date", nullable = false, updatable = false)
+    private LocalDateTime orderDate;
+	
+    @Column(name = "total_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal totalPrice;
+	
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 30)
+    private OrderStatus status;
+	
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> items = new ArrayList<>();
+    
+    
+    public void addItem(OrderItem item) {
+        items.add(item);
+        item.setOrder(this);
+    }
+}
+
+=== FILE: OrderItem.java ===
+
+package com.betacomics.models;
+
+import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@ToString
+public class OrderItem {
+	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+	private Long id;
+    
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+    
+    @Column(nullable = false)
+	private BigDecimal priceAtPurchase;
+    
+    @Column(nullable = false)
+	private Integer quantity;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+}
+
+=== FILE: Product.java ===
+
+package com.betacomics.models;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
+@Entity
+@Getter
+@Setter
+@SuperBuilder
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "products")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(name = "stock_quantity", nullable = false)
+    private Integer stockQuantity;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    private Double weight;
+
+    @Column(name = "release_date")
+    private LocalDate releaseDate;
+}
+
+=== FILE: User.java ===
+
+package com.betacomics.models;
+
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Entity
+@Getter
+@Setter
+@ToString
+@Table(name = "users")
+public class User {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+	
+	@Column(nullable = false)
+	private String username;
+	
+	@Column(nullable = false, unique = true)
+    private String email;
+	
+	@Column(nullable = false)
+    private String password;
+	
+	@Column(nullable = false)
+    private Boolean isAdmin;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Order> orders;
+	
+	@ToString.Exclude
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Cart cart;
+}
+
+=== FILE: ActionFigureRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.ActionFigure;
+
+@Repository
+public interface ActionFigureRepository extends JpaRepository<ActionFigure, Long> {
+
+}
+
+=== FILE: BoardGameRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.BoardGame;
+
+@Repository
+public interface BoardGameRepository extends JpaRepository<BoardGame, Long> {
+
+}
+
+=== FILE: CartItemRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.CartItem;
+
+@Repository
+public interface CartItemRepository extends JpaRepository<CartItem, Long>{
+
+}
+
+=== FILE: CartRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.Cart;
+
+@Repository
+public interface CartRepository extends JpaRepository<Cart, Long>{
+
+}
+
+=== FILE: ComicRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.Comic;
+
+@Repository
+public interface ComicRepository extends JpaRepository<Comic, Long>{
+
+}
+
+=== FILE: MessageRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.Message;
+
+@Repository
+public interface MessageRepository extends JpaRepository<Message, String>{
+
+}
+
+=== FILE: OrderItemRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.betacomics.models.OrderItem;
+
+public interface OrderItemRepository extends JpaRepository<OrderItem, Long>{
+
+}
+
+=== FILE: OrderRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.Order;
+
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Long> {
+
+}
+
+=== FILE: ProductRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.Product;
+
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+}
+
+=== FILE: UserRepository.java ===
+
+package com.betacomics.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.betacomics.models.User;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+}
+
+=== FILE: ActionFigureServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.betacomics.dto.input.ActionFigureReq;
+import com.betacomics.dto.output.ActionFigureDTO;
+import com.betacomics.maps.ActionFigureMap;
+import com.betacomics.models.ActionFigure;
+import com.betacomics.repositories.ActionFigureRepository;
+import com.betacomics.services.interfaces.ActionFigureService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ActionFigureServiceImpl implements ActionFigureService {
+
+	private final ActionFigureRepository actionFigureRepository;
+	
+	@Transactional
+	@Override
+	public void create(ActionFigureReq req) {
+		log.debug("create Action Figure {}", req);
+		ActionFigure action = new ActionFigure();
+		
+		action.setName(req.getName());
+		action.setDescription(req.getDescription());
+		action.setPrice(req.getPrice());
+		action.setStockQuantity(req.getStockQuantity());
+		action.setImageUrl(req.getImageUrl());
+		action.setWeight(req.getWeight());
+		action.setReleaseDate(req.getReleaseDate());
+		
+		action.setBrand(req.getBrand());
+		action.setMaterial(req.getMaterial());
+		action.setHeight(req.getHeight());
+		action.setWidth(req.getWidth());
+		action.setDepth(req.getDepth());
+		
+		actionFigureRepository.save(action);
+	}
+
+	@Override
+	public ActionFigureDTO getById(Long id) {
+		log.debug("get by id {}", id);
+		return ActionFigureMap.buildActionFigureDTO(actionFigureRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Product not found at id: " + id)));
+				
+	}
+
+	@Override
+	public List<ActionFigureDTO> list() {
+		log.debug("list");
+		return ActionFigureMap.buildActionFigureDTOList(actionFigureRepository.findAll());
+	}
+
+	@Transactional
+	@Override
+	public void update(ActionFigureReq req) {
+		log.debug("update Action Figure{}", req);
+		
+		ActionFigure action = actionFigureRepository.findById(req.getId())
+				.orElseThrow(() -> new RuntimeException("Product not found at id: " + req.getId()));
+		
+		Optional.ofNullable(req.getName()).ifPresent(action::setName);
+		Optional.ofNullable(req.getDescription()).ifPresent(action::setDescription);
+		Optional.ofNullable(req.getPrice()).ifPresent(action::setPrice);
+		Optional.ofNullable(req.getStockQuantity()).ifPresent(action::setStockQuantity);
+		Optional.ofNullable(req.getImageUrl()).ifPresent(action::setImageUrl);
+		Optional.ofNullable(req.getWeight()).ifPresent(action::setWeight);
+		Optional.ofNullable(req.getReleaseDate()).ifPresent(action::setReleaseDate);
+		
+		Optional.ofNullable(req.getBrand()).ifPresent(action::setBrand);
+		Optional.ofNullable(req.getMaterial()).ifPresent(action::setMaterial);
+		Optional.ofNullable(req.getHeight()).ifPresent(action::setHeight);
+		Optional.ofNullable(req.getWidth()).ifPresent(action::setWidth);
+		Optional.ofNullable(req.getDepth()).ifPresent(action::setDepth);
+		
+		actionFigureRepository.save(action);
+	}
+
+	@Transactional
+	@Override
+	public void delete(Long id) {
+		log.debug("delete {}", id);
+		actionFigureRepository.deleteById(id);
+	}
+
+}
+
+=== FILE: BoardGameServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.betacomics.dto.input.BoardGameReq;
+import com.betacomics.dto.output.BoardGameDTO;
+import com.betacomics.maps.BoardGameMap;
+import com.betacomics.models.BoardGame;
+import com.betacomics.repositories.BoardGameRepository;
+import com.betacomics.services.interfaces.BoardGameService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class BoardGameServiceImpl implements BoardGameService {
+
+	private final BoardGameRepository boardGameRepository;
+	
+	@Transactional
+	@Override
+	public void create(BoardGameReq req) {
+		log.debug("create Board Game {}", req);
+		BoardGame board = new BoardGame();
+		
+		board.setName(req.getName());
+		board.setDescription(req.getDescription());
+		board.setPrice(req.getPrice());
+		board.setStockQuantity(req.getStockQuantity());
+		board.setImageUrl(req.getImageUrl());
+		board.setWeight(req.getWeight());
+		board.setReleaseDate(req.getReleaseDate());
+		
+		board.setBrand(req.getBrand());
+		board.setMinPlayers(req.getMinPlayers());
+		board.setMaxPlayers(req.getMaxPlayers());
+		
+		if (board.getMinPlayers() != null && board.getMaxPlayers() != null) {
+		    if (board.getMinPlayers() > board.getMaxPlayers()) {
+		        throw new RuntimeException("Minimum players cannot be greater than maximum players");
+		    }
+		}
+		board.setAveragePlayTime(req.getAveragePlayTime());
+		board.setRecommendedAge(req.getRecommendedAge());
+		
+		boardGameRepository.save(board);
+	}
+
+	@Override
+	public BoardGameDTO getById(Long id) {
+		log.debug("get by id {}", id);
+		return BoardGameMap.buildBoardGameDTO(boardGameRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Product not found at id: " + id)));
+	}
+	
+	@Override
+	public List<BoardGameDTO> list() {
+		log.debug("list");
+		return BoardGameMap.buildBoardGameDTOList(boardGameRepository.findAll());
+	}
+
+	@Transactional
+	@Override
+	public void update(BoardGameReq req) {
+		log.debug("update Board Game {}", req);
+		
+		BoardGame board = boardGameRepository.findById(req.getId())
+				.orElseThrow(() -> new RuntimeException("Product not found at id: " + req.getId()));
+		
+		Optional.ofNullable(req.getName()).ifPresent(board::setName);
+		Optional.ofNullable(req.getDescription()).ifPresent(board::setDescription);
+		Optional.ofNullable(req.getPrice()).ifPresent(board::setPrice);
+		Optional.ofNullable(req.getStockQuantity()).ifPresent(board::setStockQuantity);
+		Optional.ofNullable(req.getImageUrl()).ifPresent(board::setImageUrl);
+		Optional.ofNullable(req.getWeight()).ifPresent(board::setWeight);
+		Optional.ofNullable(req.getReleaseDate()).ifPresent(board::setReleaseDate);
+		
+		Optional.ofNullable(req.getBrand()).ifPresent(board::setBrand);
+		Optional.ofNullable(req.getMinPlayers()).ifPresent(board::setMinPlayers);
+		Optional.ofNullable(req.getMaxPlayers()).ifPresent(board::setMaxPlayers);
+		Optional.ofNullable(req.getAveragePlayTime()).ifPresent(board::setAveragePlayTime);
+		Optional.ofNullable(req.getRecommendedAge()).ifPresent(board::setRecommendedAge);
+		
+		boardGameRepository.save(board);
+	}
+
+	@Transactional
+	@Override
+	public void delete(Long id) {
+		log.debug("delete {}", id);
+		boardGameRepository.deleteById(id);
+	}
+}
+
+=== FILE: CartItemServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.betacomics.dto.input.CartItemReq;
+import com.betacomics.models.Cart;
+import com.betacomics.models.CartItem;
+import com.betacomics.models.Product;
+import com.betacomics.repositories.CartItemRepository;
+import com.betacomics.repositories.CartRepository;
+import com.betacomics.repositories.ProductRepository;
+import com.betacomics.services.interfaces.CartItemService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CartItemServiceImpl implements CartItemService {
+
+    private final CartRepository cartRepository;
+    private final CartItemRepository cartItemRepository;
+    private final ProductRepository productRepository; 
+
+    @Transactional
+    @Override
+    public void addItem(CartItemReq req) {
+        log.debug("Adding product {} to cart {}", req.getProductId(), req.getCartId());
+
+        Cart cart = cartRepository.findById(req.getCartId())
+                .orElseThrow(() -> new RuntimeException("Cart not found at id: " + req.getCartId()));
+
+        Product product = productRepository.findById(req.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found at id: " + req.getProductId()));
+
+        if (product.getStockQuantity() < req.getQuantity()) {
+            throw new RuntimeException("Not enough stock for product: " + product.getName());
+        }
+
+        Optional<CartItem> existingItem = cart.getItems().stream()
+                .filter(item -> item.getProduct().getId().equals(product.getId()))
+                .findFirst();
+
+        if (existingItem.isPresent()) {
+            CartItem item = existingItem.get();
+            item.setQuantity(item.getQuantity() + req.getQuantity());
+        } else {
+            CartItem newItem = CartItem.builder()
+                    .cart(cart)
+                    .product(product)
+                    .quantity(req.getQuantity())
+                    .build();
+            cart.getItems().add(newItem);
+        }
+
+        cartRepository.save(cart);
+    }
+
+    @Transactional
+    @Override
+    public void updateQuantity(CartItemReq req) {
+        log.debug("Updating quantity for cart item {}", req.getId());
+
+        CartItem item = cartItemRepository.findById(req.getId())
+                .orElseThrow(() -> new RuntimeException("CartItem not found at id: " + req.getId()));
+
+        if (req.getQuantity() != null) {
+            if (item.getProduct().getStockQuantity() < req.getQuantity()) {
+                throw new RuntimeException("Not enough stock for product: " + item.getProduct().getName());
+            }
+            item.setQuantity(req.getQuantity());
+        }
+
+        cartItemRepository.save(item);
+    }
+
+    @Transactional
+    @Override
+    public void removeItem(Long cartId, Long itemId) {
+        log.debug("Removing cart item {} from cart {}", itemId, cartId);
+
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new RuntimeException("Cart not found at id: " + cartId));
+
+        boolean removed = cart.getItems().removeIf(item -> item.getId().equals(itemId));
+        
+        if (!removed) {
+            throw new RuntimeException("Item not found in this cart");
+        }
+
+        cartRepository.save(cart);
+    }
+}
+
+=== FILE: CartServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.betacomics.dto.input.CartItemReq;
+import com.betacomics.dto.input.CartReq;
+import com.betacomics.dto.output.CartDTO;
+import com.betacomics.maps.CartItemMap;
+import com.betacomics.maps.CartMap;
+import com.betacomics.models.Cart;
+import com.betacomics.models.Product;
+import com.betacomics.models.User;
+import com.betacomics.repositories.CartRepository;
+import com.betacomics.repositories.ProductRepository;
+import com.betacomics.repositories.UserRepository;
+import com.betacomics.services.interfaces.CartService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CartServiceImpl implements CartService {
+
+    private final CartRepository cartRepository;
+    private final UserRepository userRepository;
+    private final ProductRepository productRepository;
+
+    @Transactional
+    @Override
+    public void create(CartReq req) {
+        log.debug("Creating a new permanent cart");
+        Cart cart = new Cart();
+        
+        User user = userRepository.findById(req.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found at id: " + req.getUserId()));
+        cart.setUser(user);
+        
+        cartRepository.save(cart);
+    }
+
+    @Override
+    public CartDTO getById(Long id) {
+        log.debug("Fetching cart with id: {}", id);
+        return cartRepository.findById(id)
+                .map(CartMap::buildCartDTO)
+                .orElseThrow(() -> new RuntimeException("Cart not found at id: " + id));
+    }
+
+    @Transactional
+    @Override
+    public void clear(Long id) {
+        log.debug("Clearing content of cart with id: {}", id);
+        
+        Cart cart = cartRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cart not found at id: " + id));
+        
+        cart.getItems().clear();
+        
+        cartRepository.save(cart);
+    }
+
+	@Override
+	public void addItemToCart(Long userId, CartItemReq itemReq) {
+		log.debug("add item: {}", itemReq);
+        
+		User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found at id: " + userId));
+		Product product = productRepository.findById(itemReq.getProductId())
+				.orElseThrow(() -> new RuntimeException("User not found at id: " + userId));
+		
+       user.getCart().getItems().add(CartItemMap.toEntity(itemReq, user.getCart(), product));
+       
+       cartRepository.save(user.getCart());
+	}
+
+	@Override
+	public void removeItemFromCart(Long userId, Long productId) {
+		// TODO Auto-generated method stub
+		
+	}
+    
+    
+}
+
+=== FILE: ComicServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.betacomics.dto.input.ComicReq;
+import com.betacomics.dto.output.ComicDTO;
+import com.betacomics.maps.ComicMap;
+import com.betacomics.models.Comic;
+import com.betacomics.repositories.ComicRepository;
+import com.betacomics.services.interfaces.ComicService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ComicServiceImpl implements ComicService{
+
+	private final ComicRepository comicRepository;
+	
+	@Transactional
+	@Override
+	public void create(ComicReq req) {
+		log.debug("create comic {}", req);
+		Comic comic = new Comic();
+		
+		comic.setName(req.getName());
+		comic.setDescription(req.getDescription());
+		comic.setPrice(req.getPrice());
+		comic.setStockQuantity(req.getStockQuantity());
+		comic.setImageUrl(req.getImageUrl());
+		comic.setWeight(req.getWeight());
+		comic.setReleaseDate(req.getReleaseDate());
+		
+		comic.setAuthor(req.getAuthor());
+		comic.setPublisher(req.getPublisher());
+		comic.setVolumeNumber(req.getVolumeNumber());
+		comic.setPages(req.getPages());
+		
+		comicRepository.save(comic);
+	}
+
+	@Override
+	public ComicDTO getById(Long id) {
+		log.debug("get by id {}", id);
+		return ComicMap.buildComicDTO(comicRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Product not found at id: " + id)));
+	}
+
+	@Override
+	public List<ComicDTO> list() {
+		log.debug("list");
+		return ComicMap.buildComicDTOList(comicRepository.findAll());
+	}
+
+	@Transactional
+	@Override
+	public void update(ComicReq req) {
+		log.debug("update comic {}", req);
+		
+		Comic comic = comicRepository.findById(req.getId())
+				.orElseThrow(() -> new RuntimeException("Product not found at id: " + req.getId()));
+		
+		Optional.ofNullable(req.getName()).ifPresent(comic::setName);
+		Optional.ofNullable(req.getDescription()).ifPresent(comic::setDescription);
+		Optional.ofNullable(req.getPrice()).ifPresent(comic::setPrice);
+		Optional.ofNullable(req.getStockQuantity()).ifPresent(comic::setStockQuantity);
+		Optional.ofNullable(req.getImageUrl()).ifPresent(comic::setImageUrl);
+		Optional.ofNullable(req.getWeight()).ifPresent(comic::setWeight);
+		Optional.ofNullable(req.getReleaseDate()).ifPresent(comic::setReleaseDate);
+		
+		Optional.ofNullable(req.getAuthor()).ifPresent(comic::setAuthor);
+		Optional.ofNullable(req.getPublisher()).ifPresent(comic::setPublisher);
+		Optional.ofNullable(req.getVolumeNumber()).ifPresent(comic::setVolumeNumber);
+		Optional.ofNullable(req.getPages()).ifPresent(comic::setPages);
+		
+		comicRepository.save(comic);
+	}
+
+	@Transactional
+	@Override
+	public void delete(Long id) {
+		log.debug("delete {}", id);
+		comicRepository.deleteById(id);
+	}
+
+}
+
+=== FILE: MessageServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.betacomics.models.Message;
+import com.betacomics.repositories.MessageRepository;
+import com.betacomics.services.interfaces.MessageService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+@RequiredArgsConstructor
+public class MessageServiceImpl implements MessageService {
+
+	private final MessageRepository messageRepository;
+	
+	@Override
+	public String get(String code) {
+		log.debug("get {}", code);
+		Message msg = messageRepository.findById(code)
+		        .orElse(new Message(code, code));
+		return msg.getMessage();
+	}
+
+}
+
+=== FILE: OrderItemServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import com.betacomics.dto.input.OrderItemReq;
+import com.betacomics.repositories.OrderItemRepository;
+import com.betacomics.repositories.OrderRepository;
+import com.betacomics.repositories.ProductRepository;
+import com.betacomics.services.interfaces.OrderItemService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@RequiredArgsConstructor
+@Slf4j
+public class OrderItemServiceImpl implements OrderItemService {
+	
+	private final OrderItemRepository orderItemRepository;
+	private final OrderRepository orderRepository;
+	private final ProductRepository productRepository;
+	
+
+	@Override
+	public void addItem(OrderItemReq req) {
+		// TODO Auto-generated method stub
+    }
+
+	@Override
+	public void updateQuantity(OrderItemReq req) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
+
+=== FILE: OrderServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.betacomics.dto.input.OrderItemReq;
+import com.betacomics.dto.input.OrderReq;
+import com.betacomics.dto.output.OrderDTO;
+import com.betacomics.maps.OrderMap;
+import com.betacomics.models.Order;
+import com.betacomics.models.OrderItem;
+import com.betacomics.models.Product;
+import com.betacomics.models.User;
+import com.betacomics.repositories.OrderRepository;
+import com.betacomics.repositories.ProductRepository;
+import com.betacomics.repositories.UserRepository;
+import com.betacomics.services.interfaces.OrderService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class OrderServiceImpl implements OrderService {
+
+	private final OrderRepository orderRepository;
+	private final ProductRepository productRepository;
+	private final UserRepository userRepository;
+		
+	@Transactional
+	@Override
+	public void create(OrderReq req) {
+		log.debug("create Order {}", req);
+        Order order = new Order();
+        
+        User user = userRepository.findById(req.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found at id: " + req.getUserId()));
+        
+        order.setOrderDate(req.getOrderDate());
+        order.setStatus(req.getStatus());
+        order.setUser(user);
+        
+        BigDecimal total = BigDecimal.ZERO;
+        
+        for (OrderItemReq itemReq : req.getOrderItems()) {
+        	Product product = productRepository.findById(itemReq.getProductId())
+        			.orElseThrow(() -> new RuntimeException("Product not found at id: " + itemReq.getProductId()));
+        	
+        	OrderItem item = new OrderItem();
+        	item.setProduct(product);
+        	item.setQuantity(itemReq.getQuantity());
+        	item.setPriceAtPurchase(product.getPrice());
+        	
+        	order.addItem(item);
+        	
+        	total = total.add(product.getPrice().multiply(BigDecimal.valueOf(itemReq.getQuantity())));
+        }
+        
+        order.setTotalPrice(total);
+        
+		orderRepository.save(order);
+	}
+
+	@Override
+	public OrderDTO getById(Long id) {
+		log.debug("get by id {}", id);
+		return OrderMap.buildOrderDTO(orderRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("Order not found at id: " + id)));
+	}
+	
+	@Override
+	public List<OrderDTO> list() {
+		log.debug("list");
+		return OrderMap.buildOrderDTOList(orderRepository.findAll());
+	}
+
+	@Transactional
+	@Override
+	public void update(OrderReq req) throws Exception{
+		Order order = orderRepository.findById(req.getId())
+				.orElseThrow(() -> new Exception("Order not found at id: " + req.getId()));
+		
+		Optional.ofNullable(req.getStatus()).ifPresent(order::setStatus);
+		
+		orderRepository.save(order);
+	}
+	
+	@Transactional
+	@Override
+	public void delete(Long id) {
+		log.debug("delete {}", id);
+		orderRepository.deleteById(id);
+	}
+	
+}
+
+=== FILE: ProductServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.betacomics.dto.output.ProductDTO;
+import com.betacomics.maps.ProductMap;
+import com.betacomics.repositories.ProductRepository;
+import com.betacomics.services.interfaces.ProductService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ProductServiceImpl implements ProductService {
+
+	private final ProductRepository pRep;
+	
+	@Transactional
+	@Override
+	public void delete(Long id) {
+		log.debug("delete {}", id);
+		pRep.deleteById(id);
+	}
+
+	@Override
+	public ProductDTO getById(Long id) {
+		log.debug("get by id {}", id);
+		return ProductMap.buildProductDTO(pRep.findById(id)
+				.orElseThrow(() -> new RuntimeException("Product not found at id: " + id)));
+	}
+
+	@Override
+	public List<ProductDTO> list() {
+		log.debug("list");
+		return ProductMap.buildProductDTOList(pRep.findAll());
+	}
+
+}
+
+=== FILE: UserServiceImpl.java ===
+
+package com.betacomics.services.impl;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
+import com.betacomics.dto.input.UserReq;
+import com.betacomics.dto.output.UserDTO;
+import com.betacomics.maps.CartMap;
+import com.betacomics.maps.UserMap;
+import com.betacomics.models.User;
+import com.betacomics.repositories.UserRepository;
+import com.betacomics.services.interfaces.UserService;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class UserServiceImpl implements UserService {
+
+	private final UserRepository userRepository;
+
+	@Transactional
+	@Override
+	public void create(UserReq req) {
+		log.debug("create user {}", req);
+		User user = new User();
+
+		user.setUsername(req.getUsername());
+		user.setEmail(req.getEmail());
+		user.setPassword(req.getPassword());
+		user.setIsAdmin(req.getIsAdmin());
+		
+		try {
+			user.setCart(CartMap.toEntity(req.getCart(), user));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//user.setOrders(null);
+
+		userRepository.save(user);
+	}
+
+	@Override
+	public UserDTO getById(Long id) {
+		log.debug("get by id {}", id);
+		return UserMap.buildUserDTO(
+				userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found at id: " + id)));
+	}
+
+	@Override
+	public List<UserDTO> list() {
+		log.debug("list");
+		return UserMap.buildUserDTOList(userRepository.findAll());
+	}
+
+	@Transactional
+	@Override
+	public void update(UserReq req) {
+		log.debug("update user {}", req);
+
+		User user = userRepository.findById(req.getId())
+				.orElseThrow(() -> new RuntimeException("User not found at id: " + req.getId()));
+
+		Optional.ofNullable(req.getUsername()).ifPresent(user::setUsername);
+		Optional.ofNullable(req.getEmail()).ifPresent(user::setEmail);
+		Optional.ofNullable(req.getPassword()).ifPresent(user::setPassword);
+		Optional.ofNullable(req.getIsAdmin()).ifPresent(user::setIsAdmin);
+		
+		try {
+			Optional.ofNullable(CartMap.toEntity(req.getCart(), user)).ifPresent(user::setCart);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		userRepository.save(user);
+	}
+
+	@Transactional
+	@Override
+	public void delete(Long id) {
+		log.debug("delete {}", id);
+		
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException("User not found for delete at id: " + id));
+		
+		userRepository.delete(user);
+	}
+
+}
+
+=== FILE: ActionFigureService.java ===
+
+package com.betacomics.services.interfaces;
+
+import java.util.List;
+
+import com.betacomics.dto.input.ActionFigureReq;
+import com.betacomics.dto.output.ActionFigureDTO;
+
+public interface ActionFigureService {
+
+	public void create(ActionFigureReq req);
+	
+	public ActionFigureDTO getById(Long id);
+	public List<ActionFigureDTO> list();
+	
+	public void update(ActionFigureReq req);
+	
+	public void delete(Long id);
+	
+}
+
+=== FILE: BoardGameService.java ===
+
+package com.betacomics.services.interfaces;
+
+import java.util.List;
+
+import com.betacomics.dto.input.BoardGameReq;
+import com.betacomics.dto.output.BoardGameDTO;
+
+public interface BoardGameService {
+
+	public void create(BoardGameReq req);
+	
+	public BoardGameDTO getById(Long id);
+	public List<BoardGameDTO> list();
+	
+	public void update(BoardGameReq req);
+	
+	public void delete(Long id);
+}
+
+=== FILE: CartItemService.java ===
+
+package com.betacomics.services.interfaces;
+
+import com.betacomics.dto.input.CartItemReq;
+
+public interface CartItemService {
+    void addItem(CartItemReq req);
+    void updateQuantity(CartItemReq req);
+    void removeItem(Long cartId, Long itemId);
+}
+
+=== FILE: CartService.java ===
+
+package com.betacomics.services.interfaces;
+
+import com.betacomics.dto.input.CartItemReq;
+import com.betacomics.dto.input.CartReq;
+import com.betacomics.dto.output.CartDTO;
+
+public interface CartService {
+	void create(CartReq req);
+
+	CartDTO getById(Long id);
+
+	void clear(Long id);
+
+	void addItemToCart(Long userId, CartItemReq itemReq);
+
+	void removeItemFromCart(Long userId, Long productId);
+}
+
+=== FILE: ComicService.java ===
+
+package com.betacomics.services.interfaces;
+
+import java.util.List;
+
+import com.betacomics.dto.input.ComicReq;
+import com.betacomics.dto.output.ComicDTO;
+
+public interface ComicService {
+	public void create(ComicReq req);
+	
+	public ComicDTO getById(Long id);
+	public List<ComicDTO> list();
+	
+	public void update(ComicReq req);
+	
+	public void delete(Long id);
+}
+
+=== FILE: MessageService.java ===
+
+package com.betacomics.services.interfaces;
+
+public interface MessageService {
+	String get(String code);
+}
+
+=== FILE: OrderItemService.java ===
+
+package com.betacomics.services.interfaces;
+
+import com.betacomics.dto.input.OrderItemReq;
+
+public interface OrderItemService {
+    void addItem(OrderItemReq req);
+    void updateQuantity(OrderItemReq req);
+}
+
+=== FILE: OrderService.java ===
+
+package com.betacomics.services.interfaces;
+
+import java.util.List;
+
+import com.betacomics.dto.input.OrderReq;
+import com.betacomics.dto.output.OrderDTO;
+
+public interface OrderService {
+	public void create(OrderReq req);
+	
+	public OrderDTO getById(Long id);
+	public List<OrderDTO> list();
+	
+	public void update(OrderReq req) throws Exception;
+	
+	public void delete(Long id);
+}
+
+=== FILE: ProductService.java ===
+
+package com.betacomics.services.interfaces;
+
+import java.util.List;
+
+import com.betacomics.dto.output.ProductDTO;
+
+public interface ProductService {
+	public void delete(Long id);
+	public ProductDTO getById(Long id);
+	public List<ProductDTO> list();
+}
+
+=== FILE: UserService.java ===
+
+package com.betacomics.services.interfaces;
+
+import java.util.List;
+
+import com.betacomics.dto.input.UserReq;
+import com.betacomics.dto.output.UserDTO;
+
+public interface UserService {
+	
+	void create(UserReq req);
+	
+	UserDTO getById(Long id);
+	
+	List<UserDTO> list();
+	
+	void update(UserReq req);
+	
+	void delete(Long id);
+}
+
+=== FILE: BetacomicsApplicationTests.java ===
+
+package com.betacomics;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class BetacomicsApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
+
+=== FILE: SuiteClass.java ===
+
+package com.betacomics;
+
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+import com.betacomics.actionFigure.ActionFigureTest;
+import com.betacomics.boardGame.BoardGameTest;
+import com.betacomics.comic.ComicTest;
+import com.betacomics.delete.DeleteTest;
+import com.betacomics.product.ProductTest;
+
+@Suite
+@SelectClasses({
+	ComicTest.class,
+	ActionFigureTest.class,
+	BoardGameTest.class,
+	ProductTest.class,
+	DeleteTest.class
+})
+public class SuiteClass {
+
+}
+
+=== FILE: ActionFigureTest.java ===
+
+package com.betacomics.actionFigure;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.betacomics.dto.output.ResponseDTO;
+import com.betacomics.dto.input.ActionFigureReq;
+import com.betacomics.dto.output.ActionFigureDTO;
+
+import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+@Slf4j
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class ActionFigureTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	private static Long Id;
+	
+	@Test
+	@Order(1)
+	public void createActionFigureTest() throws Exception{
+		log.debug("createActionFigureTest");
+		
+		ActionFigureReq req = new ActionFigureReq();
+		
+		req.setName("ma");
+        req.setDescription("dffgh");
+        req.setPrice(new BigDecimal("49.99"));
+        req.setStockQuantity(3);
+        req.setImageUrl("dfgbg");
+        req.setWeight(100.5);
+        req.setReleaseDate(LocalDate.of(2026, 7, 8));
+        
+        req.setBrand("asddf");
+        req.setMaterial("djfgkjd");
+        req.setHeight(10.);
+        req.setWidth(10.);
+        req.setDepth(10.);
+        
+        
+        
+		mockMvc.perform(post("/actionFigure/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(2)
+	public void createActionFigureTestError() throws Exception{
+		log.debug("createActionFigureTestError");
+		ActionFigureReq req = new ActionFigureReq();
+		
+		MvcResult result =  mockMvc.perform(post("/actionFigure/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				)
+		.andExpect(status().isBadRequest())		 
+		.andReturn();
+		
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		
+		log.debug("ActionFigure create: {}", dto.getMessage());
+	}
+	
+	@Test
+	@Order(3)
+	public void listActionFigureTest() throws Exception{
+		log.debug("listActionFigureTest");
+		
+		MvcResult result = mockMvc.perform(get("/actionFigure/list"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		List<ActionFigureDTO> lA = objectMapper.readValue(
+	            json,
+	            new TypeReference<List<ActionFigureDTO>>() {}
+	    );
+		
+		assertFalse(lA.isEmpty());
+		
+		lA.forEach(a -> log.debug(a.toString()));
+		
+		Id = lA.get(0).getId();
+	}
+	
+	@Test
+	@Order(4)
+	public void updateActionFigureTest() throws Exception{
+		log.debug("updateActionFigureTest");
+
+		ActionFigureReq req = new ActionFigureReq();
+		req.setId(Id);
+		req.setBrand("ciao");
+
+		mockMvc.perform(patch("/actionFigure/update")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(5)
+	public void getById() throws Exception{
+		log.debug("getById");
+		
+		MvcResult result = mockMvc.perform(get("/actionFigure/getById").param("id", Id.toString()))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		ActionFigureDTO a = objectMapper.readValue(json,ActionFigureDTO.class);
+		
+		log.debug(a.toString());
+	} 
+}
+
+=== FILE: BoardGameTest.java ===
+
+package com.betacomics.boardGame;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.betacomics.dto.input.BoardGameReq;
+import com.betacomics.dto.output.BoardGameDTO;
+import com.betacomics.dto.output.ResponseDTO;
+
+import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+@Slf4j
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class BoardGameTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	private static Long Id;
+	
+	@Test
+	@Order(1)
+	public void createBoardGameTest() throws Exception{
+		log.debug("createBoardGameTest");
+		
+		BoardGameReq req = new BoardGameReq();
+		
+		req.setName("ma");
+        req.setDescription("dffgh");
+        req.setPrice(new BigDecimal("49.99"));
+        req.setStockQuantity(3);
+        req.setImageUrl("dfgbg");
+        req.setWeight(100.5);
+        req.setReleaseDate(LocalDate.of(2026, 7, 8));
+        
+        req.setBrand("asddf");
+        req.setMinPlayers(2);
+        req.setMaxPlayers(12);
+        req.setAveragePlayTime(50);
+        req.setRecommendedAge(18);
+        
+        
+		mockMvc.perform(post("/boardGame/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(2)
+	public void createBoardGameTestError() throws Exception{
+		log.debug("createBoardGameTestError");
+		BoardGameReq req = new BoardGameReq();
+		
+		MvcResult result =  mockMvc.perform(post("/boardGame/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				)
+		.andExpect(status().isBadRequest())		 
+		.andReturn();
+		
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		
+		log.debug("BoardGame create: {}", dto.getMessage());
+	}
+	
+	@Test
+	@Order(3)
+	public void listBoardGameTest() throws Exception{
+		log.debug("listBoardGameTest");
+		
+		MvcResult result = mockMvc.perform(get("/boardGame/list"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		List<BoardGameDTO> lB = objectMapper.readValue(
+	            json,
+	            new TypeReference<List<BoardGameDTO>>() {}
+	    );
+		
+		assertFalse(lB.isEmpty());
+		
+		lB.forEach(b -> log.debug(b.toString()));
+		
+		Id = lB.get(0).getId();
+	}
+	
+	@Test
+	@Order(4)
+	public void updateBoardGameTest() throws Exception{
+		log.debug("updateBoardGameTest");
+
+		BoardGameReq req = new BoardGameReq();
+		req.setId(Id);
+		req.setBrand("ciao");
+
+		mockMvc.perform(patch("/boardGame/update")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(5)
+	public void getById() throws Exception{
+		log.debug("getById");
+		
+		MvcResult result = mockMvc.perform(get("/boardGame/getById").param("id", Id.toString()))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		BoardGameDTO a = objectMapper.readValue(json,BoardGameDTO.class);
+		
+		log.debug(a.toString());
+	} 
+}
+
+=== FILE: ComicTest.java ===
+
+package com.betacomics.comic;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.betacomics.dto.input.ComicReq;
+import com.betacomics.dto.output.ComicDTO;
+import com.betacomics.dto.output.ResponseDTO;
+
+import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+@Slf4j
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class ComicTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	private static Long Id;
+	
+	@Test
+	@Order(1)
+	public void createComicTest() throws Exception{
+		log.debug("createComicTest");
+		
+		ComicReq req = new ComicReq();
+		
+		req.setName("ma");
+        req.setDescription("dffgh");
+        req.setPrice(new BigDecimal("49.99"));
+        req.setStockQuantity(3);
+        req.setImageUrl("dfgbg");
+        req.setWeight(100.5);
+        req.setReleaseDate(LocalDate.of(2026, 7, 8));
+        
+        req.setAuthor("ad");
+        req.setPublisher("dfg");
+        req.setVolumeNumber(2);
+        req.setPages(100);
+        
+		mockMvc.perform(post("/comic/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(2)
+	public void createComicTestError() throws Exception{
+		log.debug("createComicTestError");
+		ComicReq req = new ComicReq();
+		
+		MvcResult result =  mockMvc.perform(post("/comic/create")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				)
+		.andExpect(status().isBadRequest())		 
+		.andReturn();
+		
+		String json = result.getResponse().getContentAsString();
+		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+		
+		log.debug("Comic create: {}", dto.getMessage());
+	}
+	
+	@Test
+	@Order(3)
+	public void listComicTest() throws Exception{
+		log.debug("listComicTest");
+		
+		MvcResult result = mockMvc.perform(get("/comic/list"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		List<ComicDTO> lC = objectMapper.readValue(
+	            json,
+	            new TypeReference<List<ComicDTO>>() {}
+	    );
+		
+		assertFalse(lC.isEmpty());
+		
+		lC.forEach(c -> log.debug(c.toString()));
+		
+		Id = lC.get(0).getId();
+	}
+	
+	@Test
+	@Order(4)
+	public void updateComicTest() throws Exception{
+		log.debug("updateComicTest");
+
+		ComicReq req = new ComicReq();
+		req.setId(Id);
+		req.setAuthor("ba");
+
+		mockMvc.perform(patch("/comic/update")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req))
+				).andExpect(status().isOk());
+	}
+	
+	@Test
+	@Order(5)
+	public void getById() throws Exception{
+		log.debug("getById");
+		
+		MvcResult result = mockMvc.perform(get("/comic/getById").param("id", Id.toString()))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		ComicDTO a = objectMapper.readValue(json,ComicDTO.class);
+		
+		log.debug(a.toString());
+	} 
+	
+}
+
+=== FILE: DeleteTest.java ===
+
+package com.betacomics.delete;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class DeleteTest {
+
+	 @Autowired
+	    private MockMvc mockMvc;
+
+	    @Test
+	    @Order(1)
+	    public void deleteComicTest() throws Exception {
+	        log.debug("deleteComicTest");
+
+	        mockMvc.perform(delete("/comic/delete/1"))
+	                .andExpect(status().isOk())
+	                .andExpect(jsonPath("$.message").exists());
+	    }
+	    
+	    @Test
+	    @Order(2)
+	    public void deleteBoardGameTest() throws Exception {
+	    	log.debug("deleteBoardGameTest");
+	    	
+	    	mockMvc.perform(delete("/boardGame/delete/2"))
+	    	.andExpect(status().isOk())
+	    	.andExpect(jsonPath("$.message").exists());
+	    }
+	    
+	    @Test
+		@Order(3)
+		public void deleteActionFigureTest() throws Exception{
+			log.debug("deleteActionFigureTest");
+			
+			mockMvc.perform(delete("/actionFigure/delete/" +  "3"))
+		            .andExpect(status().isOk())
+		            .andExpect(jsonPath("$.message").exists());  
+		}
+	    
+	    @Test
+	    @Order(4)
+	    public void deleteProductTest() throws Exception {
+	        log.debug("deleteProductTest");
+
+	        mockMvc.perform(delete("/product/delete/1"))
+	                .andExpect(status().isOk())
+	                .andExpect(jsonPath("$.message").exists());
+	    }
+}
+
+=== FILE: ProductTest.java ===
+
+package com.betacomics.product;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.betacomics.dto.output.ProductDTO;
+
+import lombok.extern.slf4j.Slf4j;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
+
+@Slf4j
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class ProductTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+	
+	@Autowired
+	private ObjectMapper objectMapper;
+	
+	@Test
+	@Order(1)
+	public void listProductTest() throws Exception{
+		log.debug("listProductTest");
+		
+		MvcResult result = mockMvc.perform(get("/product/list"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		List<ProductDTO> lP = objectMapper.readValue(
+	            json,
+	            new TypeReference<List<ProductDTO>>() {}
+	    );
+		
+		assertFalse(lP.isEmpty());
+		
+		lP.forEach(p -> log.debug(p.toString()));
+	} 
+	
+	@Test
+	@Order(5)
+	public void getById() throws Exception{
+		log.debug("getById");
+		
+		MvcResult result = mockMvc.perform(get("/product/getById/1"))
+	            .andExpect(status().isOk())
+	            .andReturn();
+		  
+		String json = result.getResponse().getContentAsString();
+		
+		ProductDTO p= objectMapper.readValue(json,ProductDTO.class);
+		
+		log.debug(p.toString());
+	} 
+}

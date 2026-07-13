@@ -52,4 +52,7 @@ public abstract class Product {
 
     @Column(name = "release_date")
     private LocalDate releaseDate;
+    
+    @Column(name = "product_type")
+    private String productType;
 }

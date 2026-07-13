@@ -1,5 +1,6 @@
 package com.betacomics.maps;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.betacomics.dto.input.OrderItemReq;
@@ -26,19 +27,6 @@ public class OrderItemMap {
         return list.stream()
                 .map(OrderItemMap::buildOrderItemDTO)
                 .toList();
-    }
-    
-	
-	public static OrderItem toEntity(OrderItemReq req, Order order, Product product) {
-        if (req == null) return null;
-
-        return OrderItem.builder()
-                .id(req.getId())
-                .product(product)
-                .priceAtPurchase(req.getPriceAtPurchase())
-                .quantity(req.getQuantity())
-                .order(order)
-                .build();
     }
 
 }

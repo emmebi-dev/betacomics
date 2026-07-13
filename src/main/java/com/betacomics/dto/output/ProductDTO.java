@@ -26,4 +26,5 @@ public class ProductDTO {
     private String imageUrl;
     private Double weight;
     private LocalDate releaseDate;
+    private String productType;
 }

@@ -13,7 +13,7 @@ public class CartMap {
 
         return CartDTO.builder()
                 .id(cart.getId())
-                .user(cart.getUser())
+                //.user(cart.getUser())
                 .items(CartItemMap.buildCartItemDTOList(cart.getItems()))
                 .build();
     }

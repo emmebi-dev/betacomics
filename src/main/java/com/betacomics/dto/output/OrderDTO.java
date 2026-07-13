@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.betacomics.enums.OrderStatus;
-import com.betacomics.models.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
