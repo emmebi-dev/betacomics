@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.ComicReq;
 import com.betacomics.dto.input.ValidationGroup;
 import com.betacomics.dto.output.ComicDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.ComicService;
 
 import lombok.RequiredArgsConstructor;
@@ -65,11 +64,9 @@ public class ComicController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Comic : {}", id);
         comicService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Comic successfully deleted")
-                    .build());
+        return ResponseEntity.noContent().build();
     }
 }

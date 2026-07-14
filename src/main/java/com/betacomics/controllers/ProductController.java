@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacomics.dto.output.ProductDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,11 +36,10 @@ public class ProductController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Product : {}", id);
         productService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Product successfully deleted")
-                    .build());
+        
+        return ResponseEntity.noContent().build();
     }
 }
