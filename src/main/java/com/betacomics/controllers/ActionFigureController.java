@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.ActionFigureReq;
 import com.betacomics.dto.input.ValidationGroup;
 import com.betacomics.dto.output.ActionFigureDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.ActionFigureService;
 
 import lombok.RequiredArgsConstructor;
@@ -63,11 +62,9 @@ public class ActionFigureController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Action Figure : {}", id);
         actionFigureService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Action Figure successfully deleted")
-                    .build());
+        return ResponseEntity.noContent().build();
     }
 }

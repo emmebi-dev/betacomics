@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.BoardGameReq;
 import com.betacomics.dto.input.ValidationGroup;
 import com.betacomics.dto.output.BoardGameDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.BoardGameService;
 
 import lombok.RequiredArgsConstructor;
@@ -63,11 +62,9 @@ public class BoardGameController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Board Game : {}", id);
         boardGameService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Board Game successfully deleted")
-                    .build());
+        return ResponseEntity.noContent().build();
     }
 }
