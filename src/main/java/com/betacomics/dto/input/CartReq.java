@@ -2,6 +2,8 @@ package com.betacomics.dto.input;
 
 import java.util.List;
 
+import com.betacomics.dto.output.CartItemDTO;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -20,5 +22,5 @@ public class CartReq {
     private Long userId;
 
     @Valid
-    private List<CartItemReq> items;
+    private List<CartItemDTO> items;
 }

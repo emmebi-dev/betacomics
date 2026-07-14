@@ -1,17 +1,17 @@
 package com.betacomics.services.interfaces;
 
+import com.betacomics.dto.input.CheckoutRequest;
+import com.betacomics.dto.input.UpdateOrderStatusRequest;
+import com.betacomics.dto.output.OrderDTO;
 import java.util.List;
 
-import com.betacomics.dto.input.OrderReq;
-import com.betacomics.dto.output.OrderDTO;
-
 public interface OrderService {
-	public void create(OrderReq req);
-	
-	public OrderDTO getById(Long id);
-	public List<OrderDTO> list();
-	
-	public void update(OrderReq req);
-	
-	public void delete(Long id);
+    
+    OrderDTO checkout(Long userId, CheckoutRequest request);
+    
+    OrderDTO getOrderDetails(Long userId, Long orderId);
+    
+    List<OrderDTO> getOrderHistory(Long userId);
+    
+    OrderDTO updateOrderStatus(Long orderId, UpdateOrderStatusRequest request);
 }

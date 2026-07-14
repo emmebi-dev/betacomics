@@ -9,14 +9,14 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@SuperBuilder
-@AllArgsConstructor
+@ToString(callSuper = true)
 @NoArgsConstructor
-@ToString
-public class ComicDTO extends ProductDTO{
+@AllArgsConstructor
+@SuperBuilder
+public class ComicDTO extends ProductDTO {
     
-	private String author;
+    private String author;
     private String publisher;
     private Integer volumeNumber;
-    private Integer pages;
+    private int pages;
 }

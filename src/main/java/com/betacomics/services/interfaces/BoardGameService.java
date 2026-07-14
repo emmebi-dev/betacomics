@@ -1,18 +1,19 @@
 package com.betacomics.services.interfaces;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.betacomics.dto.input.BoardGameReq;
 import com.betacomics.dto.output.BoardGameDTO;
 
 public interface BoardGameService {
 
-	public void create(BoardGameReq req);
-	
-	public BoardGameDTO getById(Long id);
-	public List<BoardGameDTO> list();
-	
-	public void update(BoardGameReq req);
-	
-	public void delete(Long id);
+    BoardGameDTO create(BoardGameReq req);
+    
+    BoardGameDTO getById(Long id);
+    
+    Page<BoardGameDTO> list(Pageable pageable);
+    
+    BoardGameDTO update(BoardGameReq req);
+    
+    void delete(Long id);
 }

@@ -1,22 +1,19 @@
 package com.betacomics.dto.output;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
+import java.math.BigDecimal;
+import lombok.*;
 
 @Getter
 @Setter
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 public class CartItemDTO {
 
     private Long id;
-    private Long cartId;
     private ProductDTO product; 
     private Integer quantity;
+    
+    private BigDecimal subTotal; 
 }

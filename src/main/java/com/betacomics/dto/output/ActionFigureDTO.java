@@ -9,15 +9,15 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class ActionFigureDTO extends ProductDTO{
+public class ActionFigureDTO extends ProductDTO {
 
-	private String brand;
+    private String brand;
     private String material;
-    private Double height;
-    private Double width;
-    private Double depth;
+    private double height;
+    private double width;
+    private double depth;
 }

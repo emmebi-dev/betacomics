@@ -9,15 +9,15 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class BoardGameDTO extends ProductDTO{
+public class BoardGameDTO extends ProductDTO {
 
-	private String brand;
-	private Integer minPlayers;
-    private Integer maxPlayers;
+    private String brand;
+    private int minPlayers;
+    private int maxPlayers;
     private Integer averagePlayTime;
     private Integer recommendedAge;
 }

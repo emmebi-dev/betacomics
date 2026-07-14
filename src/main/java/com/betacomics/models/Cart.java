@@ -38,6 +38,17 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items = new ArrayList<>();
+    
+    public void addItem(CartItem item) {
+        this.items.add(item);
+        item.setCart(this);
+    }
+
+    public void removeItem(CartItem item) {
+        this.items.remove(item);
+        item.setCart(null);
+    }
 }

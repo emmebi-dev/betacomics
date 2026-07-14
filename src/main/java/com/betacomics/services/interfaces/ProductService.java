@@ -1,11 +1,14 @@
 package com.betacomics.services.interfaces;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.betacomics.dto.output.ProductDTO;
 
 public interface ProductService {
-	public void delete(Long id);
-	public ProductDTO getById(Long id);
-	public List<ProductDTO> list();
+    
+    ProductDTO getById(Long id);
+    
+    Page<ProductDTO> list(Pageable pageable);
+    
+    void delete(Long id);
 }
