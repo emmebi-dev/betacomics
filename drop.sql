@@ -19,11 +19,11 @@
     alter table if exists comics 
        drop constraint if exists FK3eylnxym8v2hqrc9dpkykwn36;
 
-    alter table if exists order_item 
-       drop constraint if exists FKt4dc2r9nbvbujrljv3e23iibt;
+    alter table if exists order_items 
+       drop constraint if exists FKbioxgbv59vetrxe0ejfubep1w;
 
-    alter table if exists order_item 
-       drop constraint if exists FKc5uhmwioq5kscilyuchp4w49o;
+    alter table if exists order_items 
+       drop constraint if exists FKocimc7dtr037rh4ls4l95nlfi;
 
     alter table if exists orders 
        drop constraint if exists FK32ql8ubntj5uh44ph9659tiih;
@@ -40,7 +40,7 @@
 
     drop table if exists error_message cascade;
 
-    drop table if exists order_item cascade;
+    drop table if exists order_items cascade;
 
     drop table if exists orders cascade;
 
