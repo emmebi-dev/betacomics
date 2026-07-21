@@ -1,6 +1,13 @@
 package com.betacomics.dto.output;
 
-import lombok.*;
+import com.betacomics.enums.Role;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -12,5 +19,5 @@ public class UserDTO {
     private Long id;
     private String username;
     private String email;
-    private boolean isAdmin;
+    private Role role;
 }

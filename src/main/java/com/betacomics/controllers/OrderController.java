@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.CheckoutRequest;
 import com.betacomics.dto.input.UpdateOrderStatusRequest;
 import com.betacomics.dto.output.OrderDTO;
+import com.betacomics.security.CurrentUserProvider;
 import com.betacomics.services.interfaces.OrderService;
 
 import jakarta.validation.Valid;
@@ -26,24 +27,25 @@ import lombok.RequiredArgsConstructor;
 public class OrderController {
 
     private final OrderService orderService;
+    private final CurrentUserProvider currentUserProvider;
 
     @PostMapping("/checkout")
     public ResponseEntity<OrderDTO> checkout(@Valid @RequestBody CheckoutRequest request) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         OrderDTO order = orderService.checkout(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     @GetMapping("/history")
     public ResponseEntity<List<OrderDTO>> getOrderHistory() {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         List<OrderDTO> history = orderService.getOrderHistory(userId);
         return ResponseEntity.ok(history);
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderDetails(@PathVariable Long orderId) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         OrderDTO order = orderService.getOrderDetails(userId, orderId);
         return ResponseEntity.ok(order);
     }
@@ -55,10 +57,5 @@ public class OrderController {
         
         OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, request);
         return ResponseEntity.ok(updatedOrder);
-    }
-
-
-    private Long getCurrentUserId() {
-        return 1L;
     }
 }

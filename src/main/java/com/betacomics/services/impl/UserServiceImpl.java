@@ -1,11 +1,13 @@
 package com.betacomics.services.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.betacomics.dto.input.RegisterRequest;
 import com.betacomics.dto.input.UpdateProfileRequest;
 import com.betacomics.dto.output.UserDTO;
+import com.betacomics.enums.Role;
 import com.betacomics.exceptions.ResourceNotFoundException;
 import com.betacomics.models.Cart;
 import com.betacomics.models.User;
@@ -20,7 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
+    
     @Override
     public UserDTO register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -34,8 +37,8 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(request.getPassword()) // TODO: In futuro qui si userà passwordEncoder.encode()
-                .isAdmin(false)
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.CUSTOMER)
                 .build();
 
         Cart emptyCart = Cart.builder()
@@ -43,9 +46,7 @@ public class UserServiceImpl implements UserService {
 
         user.setCart(emptyCart);
 
-        User savedUser = userRepository.save(user);
-
-        return mapToUserDTO(savedUser);
+        return mapToUserDTO(userRepository.save(user));
     }
 
     @Override
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService {
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .isAdmin(user.isAdmin())
+                .role(user.getRole())
                 .build();
     }
 }
