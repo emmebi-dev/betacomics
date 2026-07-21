@@ -1,10 +1,11 @@
 package com.betacomics.repositories;
 
-import com.betacomics.models.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.betacomics.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

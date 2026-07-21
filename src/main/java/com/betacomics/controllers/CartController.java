@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.AddToCartRequest;
 import com.betacomics.dto.input.UpdateQuantityRequest;
 import com.betacomics.dto.output.CartDTO;
+import com.betacomics.security.CurrentUserProvider;
 import com.betacomics.services.interfaces.CartService;
 
 import jakarta.validation.Valid;
@@ -24,10 +25,11 @@ import lombok.RequiredArgsConstructor;
 public class CartController {
 
     private final CartService cartService;
+    private final CurrentUserProvider currentUserProvider;
 
     @GetMapping
     public ResponseEntity<CartDTO> getCart() {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO cart = cartService.getCartByUserId(userId);
         return ResponseEntity.ok(cart);
     }
@@ -35,21 +37,21 @@ public class CartController {
 
     @PostMapping("/items")
     public ResponseEntity<CartDTO> addItemToCart(@Valid @RequestBody AddToCartRequest request) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO updatedCart = cartService.addItemToCart(userId, request.getProductId(), request.getQuantity());
         return ResponseEntity.ok(updatedCart);
     }
 
     @PutMapping("/items")
     public ResponseEntity<CartDTO> updateItemQuantity(@Valid @RequestBody UpdateQuantityRequest request) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO updatedCart = cartService.updateItemQuantity(userId, request.getProductId(), request.getQuantity());
         return ResponseEntity.ok(updatedCart);
     }
 
     @DeleteMapping("/items/{productId}")
     public ResponseEntity<CartDTO> removeItemFromCart(@PathVariable Long productId) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO updatedCart = cartService.removeItemFromCart(userId, productId);
         return ResponseEntity.ok(updatedCart);
     }
@@ -57,13 +59,8 @@ public class CartController {
     
     @DeleteMapping
     public ResponseEntity<Void> clearCart() {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
-    }
-
-    //TO-DO User management
-    private Long getCurrentUserId() {
-        return 1L;
-    }
+    }    
 }

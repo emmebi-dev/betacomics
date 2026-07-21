@@ -1,6 +1,6 @@
-﻿
-=== FILE: BetacomicsApplication.java ===
-
+﻿==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\BetacomicsApplication.java
+==========================================
 package com.betacomics;
 
 import org.springframework.boot.SpringApplication;
@@ -15,8 +15,35 @@ public class BetacomicsApplication {
 
 }
 
-=== FILE: ActionFigureController.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\config\CorsConfig.java
+==========================================
+package com.betacomics.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:4200")
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true); // giÃ  presente, corretto: necessario per inviare/ricevere cookie
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\controllers\ActionFigureController.java
+==========================================
 package com.betacomics.controllers;
 
 import org.springframework.data.domain.Page;
@@ -36,7 +63,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.ActionFigureReq;
 import com.betacomics.dto.input.ValidationGroup;
 import com.betacomics.dto.output.ActionFigureDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.ActionFigureService;
 
 import lombok.RequiredArgsConstructor;
@@ -82,17 +108,18 @@ public class ActionFigureController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Action Figure : {}", id);
         actionFigureService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Action Figure successfully deleted")
-                    .build());
+        return ResponseEntity.noContent().build();
     }
 }
 
-=== FILE: BoardGameController.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\controllers\BoardGameController.java
+==========================================
 package com.betacomics.controllers;
 
 import org.springframework.data.domain.Page;
@@ -112,7 +139,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.BoardGameReq;
 import com.betacomics.dto.input.ValidationGroup;
 import com.betacomics.dto.output.BoardGameDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.BoardGameService;
 
 import lombok.RequiredArgsConstructor;
@@ -158,17 +184,18 @@ public class BoardGameController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Board Game : {}", id);
         boardGameService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Board Game successfully deleted")
-                    .build());
+        return ResponseEntity.noContent().build();
     }
 }
 
-=== FILE: CartController.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\controllers\CartController.java
+==========================================
 package com.betacomics.controllers;
 
 import org.springframework.http.ResponseEntity;
@@ -184,6 +211,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.AddToCartRequest;
 import com.betacomics.dto.input.UpdateQuantityRequest;
 import com.betacomics.dto.output.CartDTO;
+import com.betacomics.security.CurrentUserProvider;
 import com.betacomics.services.interfaces.CartService;
 
 import jakarta.validation.Valid;
@@ -195,10 +223,11 @@ import lombok.RequiredArgsConstructor;
 public class CartController {
 
     private final CartService cartService;
+    private final CurrentUserProvider currentUserProvider;
 
     @GetMapping
     public ResponseEntity<CartDTO> getCart() {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO cart = cartService.getCartByUserId(userId);
         return ResponseEntity.ok(cart);
     }
@@ -206,21 +235,21 @@ public class CartController {
 
     @PostMapping("/items")
     public ResponseEntity<CartDTO> addItemToCart(@Valid @RequestBody AddToCartRequest request) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO updatedCart = cartService.addItemToCart(userId, request.getProductId(), request.getQuantity());
         return ResponseEntity.ok(updatedCart);
     }
 
     @PutMapping("/items")
     public ResponseEntity<CartDTO> updateItemQuantity(@Valid @RequestBody UpdateQuantityRequest request) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO updatedCart = cartService.updateItemQuantity(userId, request.getProductId(), request.getQuantity());
         return ResponseEntity.ok(updatedCart);
     }
 
     @DeleteMapping("/items/{productId}")
     public ResponseEntity<CartDTO> removeItemFromCart(@PathVariable Long productId) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         CartDTO updatedCart = cartService.removeItemFromCart(userId, productId);
         return ResponseEntity.ok(updatedCart);
     }
@@ -228,19 +257,17 @@ public class CartController {
     
     @DeleteMapping
     public ResponseEntity<Void> clearCart() {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
-    }
-
-    //TO-DO User management
-    private Long getCurrentUserId() {
-        return 1L;
-    }
+    }    
 }
 
-=== FILE: ComicController.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\controllers\ComicController.java
+==========================================
 package com.betacomics.controllers;
 
 import org.springframework.data.domain.Page;
@@ -260,7 +287,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.ComicReq;
 import com.betacomics.dto.input.ValidationGroup;
 import com.betacomics.dto.output.ComicDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.ComicService;
 
 import lombok.RequiredArgsConstructor;
@@ -308,69 +334,18 @@ public class ComicController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Comic : {}", id);
         comicService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Comic successfully deleted")
-                    .build());
+        return ResponseEntity.noContent().build();
     }
 }
 
-=== FILE: ExceptionManager.java ===
 
-package com.betacomics.controllers;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.betacomics.dto.output.ResponseDTO;
-import com.betacomics.services.interfaces.MessageService;
-
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-@RequiredArgsConstructor
-@RestControllerAdvice
-public class ExceptionManager {
-	
-	private final MessageService messageService;
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ResponseDTO> handleException(Exception e){
-		return ResponseEntity.badRequest()
-				.body(ResponseDTO.builder()
-						.message(messageService.get(e.getMessage()))
-						.build()
-						);
-	}
-	
-	
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ResponseDTO> handleValidationException(MethodArgumentNotValidException e) {
-		  String msg = e.getBindingResult()
-	                .getFieldErrors()
-	                .stream()
-	                .findFirst()
-	                .map(FieldError::getDefaultMessage)
-	                .orElse("Validation Error");
-
-		  return ResponseEntity.badRequest()
-					.body(ResponseDTO.builder()
-							.message(messageService.get(msg))
-							.build()
-							);  
-	}
-	
-	
-}
-
-=== FILE: OrderController.java ===
-
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\controllers\OrderController.java
+==========================================
 package com.betacomics.controllers;
 
 import java.util.List;
@@ -388,6 +363,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.betacomics.dto.input.CheckoutRequest;
 import com.betacomics.dto.input.UpdateOrderStatusRequest;
 import com.betacomics.dto.output.OrderDTO;
+import com.betacomics.security.CurrentUserProvider;
 import com.betacomics.services.interfaces.OrderService;
 
 import jakarta.validation.Valid;
@@ -399,24 +375,25 @@ import lombok.RequiredArgsConstructor;
 public class OrderController {
 
     private final OrderService orderService;
+    private final CurrentUserProvider currentUserProvider;
 
     @PostMapping("/checkout")
     public ResponseEntity<OrderDTO> checkout(@Valid @RequestBody CheckoutRequest request) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         OrderDTO order = orderService.checkout(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
 
     @GetMapping("/history")
     public ResponseEntity<List<OrderDTO>> getOrderHistory() {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         List<OrderDTO> history = orderService.getOrderHistory(userId);
         return ResponseEntity.ok(history);
     }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderDetails(@PathVariable Long orderId) {
-        Long userId = getCurrentUserId();
+        Long userId = currentUserProvider.getCurrentUserId();
         OrderDTO order = orderService.getOrderDetails(userId, orderId);
         return ResponseEntity.ok(order);
     }
@@ -429,15 +406,13 @@ public class OrderController {
         OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, request);
         return ResponseEntity.ok(updatedOrder);
     }
-
-
-    private Long getCurrentUserId() {
-        return 1L;
-    }
 }
 
-=== FILE: ProductController.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\controllers\ProductController.java
+==========================================
 package com.betacomics.controllers;
 
 import org.springframework.data.domain.Page;
@@ -450,7 +425,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacomics.dto.output.ProductDTO;
-import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.services.interfaces.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -477,29 +451,38 @@ public class ProductController {
     }
     
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseDTO> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("REST request to delete Product : {}", id);
         productService.delete(id);
-        return ResponseEntity.ok(ResponseDTO.builder()
-                    .message("Product successfully deleted")
-                    .build());
+        
+        return ResponseEntity.noContent().build();
     }
 }
 
-=== FILE: UserController.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\controllers\UserController.java
+==========================================
 package com.betacomics.controllers;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.betacomics.dto.input.RegisterRequest;
 import com.betacomics.dto.input.UpdateProfileRequest;
 import com.betacomics.dto.output.UserDTO;
+import com.betacomics.security.CurrentUserProvider;
 import com.betacomics.services.interfaces.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -507,6 +490,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final CurrentUserProvider currentUserProvider;
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@Valid @RequestBody RegisterRequest request) {
@@ -516,25 +500,24 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<UserDTO> getMyProfile() {
-        Long currentUserId = getCurrentUserId(); // Simulazione dell'estrazione dal token JWT
+        Long currentUserId = currentUserProvider.getCurrentUserId();
         UserDTO profile = userService.getUserById(currentUserId);
         return ResponseEntity.ok(profile);
     }
 
     @PutMapping("/profile")
     public ResponseEntity<UserDTO> updateMyProfile(@Valid @RequestBody UpdateProfileRequest request) {
-        Long currentUserId = getCurrentUserId();
+        Long currentUserId = currentUserProvider.getCurrentUserId();
         UserDTO updatedProfile = userService.updateProfile(currentUserId, request);
         return ResponseEntity.ok(updatedProfile);
     }
-
-    private Long getCurrentUserId() {
-        return 1L;
-    }
 }
 
-=== FILE: ActionFigureReq.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\ActionFigureReq.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.NotBlank;
@@ -574,8 +557,11 @@ public class ActionFigureReq extends ProductReq {
     private Double depth;
 }
 
-=== FILE: AddToCartRequest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\AddToCartRequest.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.NotNull;
@@ -598,8 +584,11 @@ public class AddToCartRequest {
     private Integer quantity;
 }
 
-=== FILE: BoardGameReq.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\BoardGameReq.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.Max;
@@ -645,8 +634,11 @@ public class BoardGameReq extends ProductReq {
     private Integer recommendedAge;
 }
 
-=== FILE: CartReq.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\CartReq.java
+==========================================
 package com.betacomics.dto.input;
 
 import java.util.List;
@@ -674,8 +666,11 @@ public class CartReq {
     private List<CartItemDTO> items;
 }
 
-=== FILE: CheckoutRequest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\CheckoutRequest.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.NotBlank;
@@ -696,8 +691,11 @@ public class CheckoutRequest {
     private String paymentMethod; // Es. "STRIPE", "PAYPAL"
 }
 
-=== FILE: ComicReq.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\ComicReq.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.NotBlank;
@@ -732,8 +730,11 @@ public class ComicReq extends ProductReq {
     private Integer pages;
 }
 
-=== FILE: ProductReq.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\ProductReq.java
+==========================================
 package com.betacomics.dto.input;
 
 import java.math.BigDecimal;
@@ -783,8 +784,11 @@ public class ProductReq {
     private LocalDate releaseDate;
 }
 
-=== FILE: RegisterRequest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\RegisterRequest.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.Email;
@@ -813,8 +817,11 @@ public class RegisterRequest {
     private String password;
 }
 
-=== FILE: UpdateOrderStatusRequest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\UpdateOrderStatusRequest.java
+==========================================
 package com.betacomics.dto.input;
 
 import com.betacomics.enums.OrderStatus;
@@ -830,8 +837,11 @@ public class UpdateOrderStatusRequest {
     private OrderStatus status;
 }
 
-=== FILE: UpdateProfileRequest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\UpdateProfileRequest.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.Email;
@@ -856,8 +866,11 @@ public class UpdateProfileRequest {
     private String email;
 }
 
-=== FILE: UpdateQuantityRequest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\UpdateQuantityRequest.java
+==========================================
 package com.betacomics.dto.input;
 
 import jakarta.validation.constraints.NotNull;
@@ -880,8 +893,11 @@ public class UpdateQuantityRequest {
     private Integer quantity;
 }
 
-=== FILE: ValidationGroup.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\input\ValidationGroup.java
+==========================================
 package com.betacomics.dto.input;
 
 public interface ValidationGroup {
@@ -889,8 +905,11 @@ public interface ValidationGroup {
 	interface Update{}
 }
 
-=== FILE: ActionFigureDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\ActionFigureDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import lombok.AllArgsConstructor;
@@ -915,8 +934,43 @@ public class ActionFigureDTO extends ProductDTO {
     private double depth;
 }
 
-=== FILE: BoardGameDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\ApiErrorResponse.java
+==========================================
+package com.betacomics.dto.output;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@Builder
+public class ApiErrorResponse {
+    private int status;                
+    private String error;             
+    private String errorCode;
+    private String message;
+    private String path;
+    private LocalDateTime timestamp;
+    private List<ValidationError> validationErrors;
+
+    @Getter
+    @Builder
+    public static class ValidationError {
+        private String field;
+        private Object rejectedValue;
+        private String message;
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\BoardGameDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import lombok.AllArgsConstructor;
@@ -941,8 +995,11 @@ public class BoardGameDTO extends ProductDTO {
     private Integer recommendedAge;
 }
 
-=== FILE: CartDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\CartDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import java.math.BigDecimal;
@@ -964,8 +1021,11 @@ public class CartDTO {
     private BigDecimal totalCartPrice; 
 }
 
-=== FILE: CartItemDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\CartItemDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import java.math.BigDecimal;
@@ -986,8 +1046,11 @@ public class CartItemDTO {
     private BigDecimal subTotal; 
 }
 
-=== FILE: ComicDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\ComicDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import lombok.AllArgsConstructor;
@@ -1011,8 +1074,11 @@ public class ComicDTO extends ProductDTO {
     private int pages;
 }
 
-=== FILE: OrderDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\OrderDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import java.math.BigDecimal;
@@ -1036,8 +1102,11 @@ public class OrderDTO {
     private List<OrderItemDTO> items;
 }
 
-=== FILE: OrderItemDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\OrderItemDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import java.math.BigDecimal;
@@ -1058,8 +1127,11 @@ public class OrderItemDTO {
     private BigDecimal subTotal; 
 }
 
-=== FILE: ProductDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\ProductDTO.java
+==========================================
 package com.betacomics.dto.output;
 
 import java.math.BigDecimal;
@@ -1105,30 +1177,21 @@ public class ProductDTO {
     private String productType;
 }
 
-=== FILE: ResponseDTO.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\dto\output\UserDTO.java
+==========================================
 package com.betacomics.dto.output;
+
+import com.betacomics.enums.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class ResponseDTO {
-	private String message;
-}
-
-=== FILE: UserDTO.java ===
-
-package com.betacomics.dto.output;
-
-import lombok.*;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -1140,11 +1203,14 @@ public class UserDTO {
     private Long id;
     private String username;
     private String email;
-    private boolean isAdmin;
+    private Role role;
 }
 
-=== FILE: OrderStatus.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\enums\OrderStatus.java
+==========================================
 package com.betacomics.enums;
 
 public enum OrderStatus {
@@ -1155,38 +1221,229 @@ public enum OrderStatus {
     CANCELLED
 }
 
-=== FILE: InsufficientStockException.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\enums\Role.java
+==========================================
+// com.betacomics.enums.Role
+package com.betacomics.enums;
+
+public enum Role {
+    CUSTOMER,
+    ADMIN
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\exceptions\BetacomicsException.java
+==========================================
 package com.betacomics.exceptions;
 
-public class InsufficientStockException extends RuntimeException {
-	public InsufficientStockException(String message) {
+import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
+
+@Getter
+@SuppressWarnings("serial")
+public abstract class BetacomicsException extends RuntimeException {
+
+    private final HttpStatus httpStatus;
+    private final String errorCode;
+
+    protected BetacomicsException(String message, HttpStatus httpStatus, String errorCode) {
         super(message);
+        this.httpStatus = httpStatus;
+        this.errorCode = errorCode;
     }
+
+    protected BetacomicsException(String message, HttpStatus httpStatus, String errorCode, Throwable cause) {
+        super(message, cause);
+        this.httpStatus = httpStatus;
+        this.errorCode = errorCode;
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\exceptions\ExceptionManager.java
+==========================================
+package com.betacomics.exceptions;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.betacomics.dto.output.ApiErrorResponse;
+import com.betacomics.services.interfaces.MessageService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@RequiredArgsConstructor
+@RestControllerAdvice
+public class ExceptionManager {
+
+    private final MessageService messageService;
+
+    /**
+     * 1. CATTURA TUTTE LE ECCEZIONI CUSTOM (ResourceNotFoundException, InsufficientStockException, ecc.)
+     * Sfrutta il polimorfismo per estrarre automaticamente HTTP Status e Error Code.
+     */
+    @ExceptionHandler(BetacomicsException.class)
+    public ResponseEntity<ApiErrorResponse> handleBetacomicsException(
+            BetacomicsException e, HttpServletRequest request) {
+        
+        // Loggiamo l'evento come avviso (Ã¨ un errore di business causato dall'utente, non un crash del server)
+        log.warn("Business exception caught at [{}]: {} (Code: {})", 
+                request.getRequestURI(), e.getMessage(), e.getErrorCode());
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .status(e.getHttpStatus().value())
+                .error(e.getHttpStatus().getReasonPhrase())
+                .errorCode(e.getErrorCode())
+                // Passiamo il messaggio (che Ã¨ la chiave, es: "product.not.found") al tuo MessageService
+                .message(messageService.get(e.getMessage()))
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(e.getHttpStatus()).body(response);
+    }
+
+    /**
+     * 2. CATTURA GLI ERRORI DI VALIDAZIONE DEI FORM (@Validated / @Valid)
+     * Cicla tutti i campi falliti, traduce i messaggi e li impacchetta in una lista comoda per il frontend.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiErrorResponse> handleValidationException(
+            MethodArgumentNotValidException e, HttpServletRequest request) {
+        
+        List<ApiErrorResponse.ValidationError> errors = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(fieldError -> ApiErrorResponse.ValidationError.builder()
+                        .field(fieldError.getField())
+                        .rejectedValue(fieldError.getRejectedValue())
+                        // Traduce la stringa di errore del campo (Es: @NotBlank(message = "comic.name.empty"))
+                        .message(messageService.get(fieldError.getDefaultMessage()))
+                        .build())
+                .toList();
+
+        log.warn("Validation failure at [{}] - {} fields rejected", request.getRequestURI(), errors.size());
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
+                .errorCode("VALIDATION_FAILED")
+                .message(messageService.get("error.validation.global")) // Messaggio generico di testata form
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .validationErrors(errors)
+                .build();
+
+        return ResponseEntity.badRequest().body(response);
+    }
+
+    /**
+     * 3. RETE DI SICUREZZA GLOBALE (NullPointerException, crash del DB, errori di sintassi SQL)
+     * Maschera i dettagli tecnici al client per motivi di sicurezza (OWASP standard) e logga l'errore critico.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiErrorResponse> handleGenericException(
+            Exception e, HttpServletRequest request) {
+        
+        // Logghiamo lo stacktrace intero in modalitÃ  ERROR sul server per permetterti il debug
+        log.error("CRITICAL: Unhandled exception caught at path: " + request.getRequestURI(), e);
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .errorCode("INTERNAL_SERVER_ERROR")
+                // Mai esporre e.getMessage() qui, conterrebbe dettagli del DB. Usiamo una chiave sicura.
+                .message(messageService.get("error.internal.generic"))
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException e, HttpServletRequest request) {
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .errorCode("ACCESS_DENIED")
+                .message(messageService.get("auth.access.denied"))
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\exceptions\InsufficientStockException.java
+==========================================
+package com.betacomics.exceptions;
+
+import org.springframework.http.HttpStatus;
+
+@SuppressWarnings("serial")
+public class InsufficientStockException extends BetacomicsException {
+
+    private static final String ERROR_CODE = "INSUFFICIENT_STOCK";
+
+    public InsufficientStockException(String message) {
+        super(message, HttpStatus.CONFLICT, ERROR_CODE);
+    }
+
     public InsufficientStockException(String message, Throwable cause) {
-        super(message, cause);
+        super(message, HttpStatus.CONFLICT, ERROR_CODE, cause);
     }
 }
 
-=== FILE: ResourceNotFoundException.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\exceptions\ResourceNotFoundException.java
+==========================================
 package com.betacomics.exceptions;
 
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.http.HttpStatus;
 
-@ResponseStatus
-public class ResourceNotFoundException extends RuntimeException{
+@SuppressWarnings("serial")
+public class ResourceNotFoundException extends BetacomicsException {
 
-	public ResourceNotFoundException(String message) {
-        super(message);
+    private static final String ERROR_CODE = "RESOURCE_NOT_FOUND";
+
+    public ResourceNotFoundException(String message) {
+        super(message, HttpStatus.NOT_FOUND, ERROR_CODE);
     }
+
     public ResourceNotFoundException(String message, Throwable cause) {
-        super(message, cause);
+        super(message, HttpStatus.NOT_FOUND, ERROR_CODE, cause);
     }
 }
 
-=== FILE: ActionFigureMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\ActionFigureMap.java
+==========================================
 package com.betacomics.maps;
 
 import java.util.List;
@@ -1227,8 +1484,11 @@ public class ActionFigureMap {
     }
 }
 
-=== FILE: BoardGameMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\BoardGameMap.java
+==========================================
 package com.betacomics.maps;
 
 import java.util.List;
@@ -1269,8 +1529,11 @@ public class BoardGameMap {
     }
 }
 
-=== FILE: CartItemMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\CartItemMap.java
+==========================================
 package com.betacomics.maps;
 
 import java.util.List;
@@ -1299,15 +1562,21 @@ public class CartItemMap {
     }
 }
 
-=== FILE: CartMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\CartMap.java
+==========================================
 package com.betacomics.maps;
 
 public class CartMap {
 }
 
-=== FILE: ComicMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\ComicMap.java
+==========================================
 package com.betacomics.maps;
 
 import java.util.List;
@@ -1347,15 +1616,21 @@ public class ComicMap {
     }
 }
 
-=== FILE: OrderMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\OrderMap.java
+==========================================
 package com.betacomics.maps;
 
 public class OrderMap {
 }
 
-=== FILE: ProductMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\ProductMap.java
+==========================================
 package com.betacomics.maps;
 
 import java.util.List;
@@ -1405,15 +1680,21 @@ public class ProductMap {
     }
 }
 
-=== FILE: UserMap.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\maps\UserMap.java
+==========================================
 package com.betacomics.maps;
 
 public class UserMap {
 }
 
-=== FILE: ActionFigure.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\ActionFigure.java
+==========================================
 package com.betacomics.models;
 
 import jakarta.persistence.*;
@@ -1448,8 +1729,11 @@ public class ActionFigure extends Product {
     private double depth;
 }
 
-=== FILE: BoardGame.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\BoardGame.java
+==========================================
 package com.betacomics.models;
 
 import jakarta.persistence.*;
@@ -1484,8 +1768,11 @@ public class BoardGame extends Product {
     private Integer recommendedAge;
 }
 
-=== FILE: Cart.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\Cart.java
+==========================================
 package com.betacomics.models;
 
 import java.util.ArrayList;
@@ -1541,8 +1828,11 @@ public class Cart {
     }
 }
 
-=== FILE: CartItem.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\CartItem.java
+==========================================
 package com.betacomics.models;
 
 import jakarta.persistence.Column;
@@ -1587,8 +1877,11 @@ public class CartItem {
     private Integer quantity;
 }
 
-=== FILE: Comic.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\Comic.java
+==========================================
 package com.betacomics.models;
 
 import jakarta.persistence.*;
@@ -1620,8 +1913,11 @@ public class Comic extends Product {
     private int pages;
 }
 
-=== FILE: Message.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\Message.java
+==========================================
 package com.betacomics.models;
 
 import jakarta.persistence.Column;
@@ -1649,8 +1945,11 @@ public class Message {
 	private String message;
 }
 
-=== FILE: Order.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\Order.java
+==========================================
 package com.betacomics.models;
 
 import java.math.BigDecimal;
@@ -1702,8 +2001,11 @@ public class Order {
     }
 }
 
-=== FILE: OrderItem.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\OrderItem.java
+==========================================
 package com.betacomics.models;
 
 import java.math.BigDecimal;
@@ -1740,8 +2042,11 @@ public class OrderItem {
     private Order order;
 }
 
-=== FILE: Product.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\Product.java
+==========================================
 package com.betacomics.models;
 
 import java.math.BigDecimal;
@@ -1803,15 +2108,36 @@ public abstract class Product {
     private LocalDate releaseDate;
 }
 
-=== FILE: User.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\models\User.java
+==========================================
 package com.betacomics.models;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.*;
-import lombok.*;
+import com.betacomics.enums.Role;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -1836,9 +2162,10 @@ public class User {
     @Column(nullable = false)
     private String password;
     
-    @Column(name = "is_admin", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     @Builder.Default
-    private boolean isAdmin = false;
+    private Role role = Role.CUSTOMER;
     
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -1855,8 +2182,11 @@ public class User {
     }
 }
 
-=== FILE: ActionFigureRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\ActionFigureRepository.java
+==========================================
 package com.betacomics.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -1869,8 +2199,11 @@ public interface ActionFigureRepository extends JpaRepository<ActionFigure, Long
 
 }
 
-=== FILE: BoardGameRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\BoardGameRepository.java
+==========================================
 package com.betacomics.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -1883,8 +2216,11 @@ public interface BoardGameRepository extends JpaRepository<BoardGame, Long> {
 
 }
 
-=== FILE: CartRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\CartRepository.java
+==========================================
 package com.betacomics.repositories;
 
 import java.util.Optional;
@@ -1901,8 +2237,11 @@ public interface CartRepository extends JpaRepository<Cart, Long>{
     Optional<Cart> findByUserId(Long userId);
 }
 
-=== FILE: ComicRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\ComicRepository.java
+==========================================
 package com.betacomics.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -1915,8 +2254,11 @@ public interface ComicRepository extends JpaRepository<Comic, Long>{
 
 }
 
-=== FILE: MessageRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\MessageRepository.java
+==========================================
 package com.betacomics.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -1929,8 +2271,11 @@ public interface MessageRepository extends JpaRepository<Message, String>{
 
 }
 
-=== FILE: OrderRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\OrderRepository.java
+==========================================
 package com.betacomics.repositories;
 
 import com.betacomics.models.Order;
@@ -1951,8 +2296,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findByIdAndUserId(Long id, Long userId);
 }
 
-=== FILE: ProductRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\ProductRepository.java
+==========================================
 package com.betacomics.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -1965,15 +2313,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 }
 
-=== FILE: UserRepository.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\repositories\UserRepository.java
+==========================================
 package com.betacomics.repositories;
 
-import com.betacomics.models.User;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import com.betacomics.models.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -1988,8 +2340,201 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 }
 
-=== FILE: ActionFigureServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\security\CurrentUserProvider.java
+==========================================
+package com.betacomics.security;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
+
+import com.betacomics.exceptions.ResourceNotFoundException;
+import com.betacomics.repositories.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Component
+@RequiredArgsConstructor
+public class CurrentUserProvider {
+
+    private final UserRepository userRepository;
+
+    public Long getCurrentUserId() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Utente autenticato non trovato: " + username))
+                .getId();
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\security\CustomUserDetailsService.java
+==========================================
+package com.betacomics.security;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+import com.betacomics.models.User;
+import com.betacomics.repositories.UserRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class CustomUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Utente non trovato: " + username));
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .authorities(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+                .build();
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\security\PasswordEncoderConfig.java
+==========================================
+package com.betacomics.security;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@Configuration
+public class PasswordEncoderConfig {
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\security\SecurityConfig.java
+==========================================
+package com.betacomics.security;
+
+import java.util.Map;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import lombok.RequiredArgsConstructor;
+import tools.jackson.databind.ObjectMapper;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
+public class SecurityConfig {
+
+    private final UserDetailsService userDetailsService;
+    private final PasswordEncoder passwordEncoder;
+    private final ObjectMapper objectMapper;
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+        .csrf(csrf -> csrf
+        	    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        	    .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+        	    .ignoringRequestMatchers("/api/v1/auth/login", "/api/v1/users/register")
+        	)
+            .sessionManagement(sm -> sm
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .maximumSessions(1)
+            )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/v1/users/register", "/api/v1/auth/login").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/product/**", "/comic/**", "/boardGame/**", "/actionFigure/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/comic/**", "/product/**", "/boardGame/**", "/actionFigure/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/comic/**", "/product/**", "/boardGame/**", "/actionFigure/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/comic/**", "/product/**", "/boardGame/**", "/actionFigure/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/orders/*/status").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginProcessingUrl("/api/v1/auth/login")
+                .successHandler((request, response, authentication) -> {
+                    response.setStatus(HttpStatus.OK.value());
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    objectMapper.writeValue(response.getWriter(),
+                            Map.of("username", authentication.getName(),
+                                   "authorities", authentication.getAuthorities()));
+                })
+                .failureHandler((request, response, exception) -> {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    objectMapper.writeValue(response.getWriter(),
+                            Map.of("error", "INVALID_CREDENTIALS", "message", "Credenziali non valide"));
+                })
+            )
+            .logout(logout -> logout
+                .logoutUrl("/api/v1/auth/logout")
+                .logoutSuccessHandler((request, response, authentication) ->
+                        response.setStatus(HttpStatus.NO_CONTENT.value()))
+            )
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+            )
+            .authenticationProvider(authenticationProvider());
+
+        return http.build();
+    }
+
+    @Bean
+    HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
+    
+    @Bean
+    DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
+    }
+}
+
+
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\ActionFigureServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
 import java.util.Optional;
@@ -2093,8 +2638,11 @@ public class ActionFigureServiceImpl implements ActionFigureService {
     }
 }
 
-=== FILE: BoardGameServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\BoardGameServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
 import java.util.Optional;
@@ -2208,8 +2756,11 @@ public class BoardGameServiceImpl implements BoardGameService {
     }
 }
 
-=== FILE: CartServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\CartServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
 import java.math.BigDecimal;
@@ -2385,8 +2936,11 @@ public class CartServiceImpl implements CartService {
     }
 }
 
-=== FILE: ComicServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\ComicServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
 import java.util.Optional;
@@ -2488,11 +3042,16 @@ public class ComicServiceImpl implements ComicService {
     }
 }
 
-=== FILE: MessageServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\MessageServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.betacomics.models.Message;
 import com.betacomics.repositories.MessageRepository;
@@ -2506,20 +3065,29 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
-	private final MessageRepository messageRepository;
-	
-	@Override
-	public String get(String code) {
-		log.debug("get {}", code);
-		Message msg = messageRepository.findById(code)
-		        .orElse(new Message(code, code));
-		return msg.getMessage();
-	}
+    private final MessageRepository messageRepository;
+    
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "errorMessages", key = "#code")
+    public String get(String code) {
+        log.debug("Database hit for error message code: {}", code);
+        
+        if (code == null || code.isBlank()) {
+            return "Unknown error";
+        }
 
+        return messageRepository.findById(code)
+                .map(Message::getMessage)
+                .orElse(code);
+    }
 }
 
-=== FILE: OrderServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\OrderServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
 import java.math.BigDecimal;
@@ -2666,8 +3234,11 @@ public class OrderServiceImpl implements OrderService {
     }
 }
 
-=== FILE: ProductServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\ProductServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
 import org.springframework.data.domain.Page;
@@ -2717,16 +3288,21 @@ public class ProductServiceImpl implements ProductService {
     }
 }
 
-=== FILE: UserServiceImpl.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\impl\UserServiceImpl.java
+==========================================
 package com.betacomics.services.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.betacomics.dto.input.RegisterRequest;
 import com.betacomics.dto.input.UpdateProfileRequest;
 import com.betacomics.dto.output.UserDTO;
+import com.betacomics.enums.Role;
 import com.betacomics.exceptions.ResourceNotFoundException;
 import com.betacomics.models.Cart;
 import com.betacomics.models.User;
@@ -2741,7 +3317,8 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
+    
     @Override
     public UserDTO register(RegisterRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -2755,8 +3332,8 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .password(request.getPassword()) // TODO: In futuro qui si userÃ  passwordEncoder.encode()
-                .isAdmin(false)
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.CUSTOMER)
                 .build();
 
         Cart emptyCart = Cart.builder()
@@ -2764,9 +3341,7 @@ public class UserServiceImpl implements UserService {
 
         user.setCart(emptyCart);
 
-        User savedUser = userRepository.save(user);
-
-        return mapToUserDTO(savedUser);
+        return mapToUserDTO(userRepository.save(user));
     }
 
     @Override
@@ -2804,13 +3379,16 @@ public class UserServiceImpl implements UserService {
                 .id(user.getId())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .isAdmin(user.isAdmin())
+                .role(user.getRole())
                 .build();
     }
 }
 
-=== FILE: ActionFigureService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\ActionFigureService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 import org.springframework.data.domain.Page;
@@ -2831,8 +3409,11 @@ public interface ActionFigureService {
     void delete(Long id);
 }
 
-=== FILE: BoardGameService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\BoardGameService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 import org.springframework.data.domain.Page;
@@ -2853,8 +3434,11 @@ public interface BoardGameService {
     void delete(Long id);
 }
 
-=== FILE: CartService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\CartService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 import com.betacomics.dto.output.CartDTO;
@@ -2870,8 +3454,11 @@ public interface CartService {
     void clearCart(Long userId);
 }
 
-=== FILE: ComicService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\ComicService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 import org.springframework.data.domain.Page;
@@ -2891,16 +3478,22 @@ public interface ComicService {
     void delete(Long id);
 }
 
-=== FILE: MessageService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\MessageService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 public interface MessageService {
 	String get(String code);
 }
 
-=== FILE: OrderService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\OrderService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 import com.betacomics.dto.input.CheckoutRequest;
@@ -2919,8 +3512,11 @@ public interface OrderService {
     OrderDTO updateOrderStatus(Long orderId, UpdateOrderStatusRequest request);
 }
 
-=== FILE: ProductService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\ProductService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 import org.springframework.data.domain.Page;
@@ -2936,8 +3532,11 @@ public interface ProductService {
     void delete(Long id);
 }
 
-=== FILE: UserService.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\main\java\com\betacomics\services\interfaces\UserService.java
+==========================================
 package com.betacomics.services.interfaces;
 
 import com.betacomics.dto.input.RegisterRequest;
@@ -2952,8 +3551,11 @@ public interface UserService {
     UserDTO updateProfile(Long id, UpdateProfileRequest request);
 }
 
-=== FILE: BetacomicsApplicationTests.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\test\java\com\betacomics\BetacomicsApplicationTests.java
+==========================================
 package com.betacomics;
 
 import org.junit.jupiter.api.Test;
@@ -2968,8 +3570,11 @@ class BetacomicsApplicationTests {
 
 }
 
-=== FILE: SuiteClass.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\test\java\com\betacomics\SuiteClass.java
+==========================================
 package com.betacomics;
 
 import org.junit.platform.suite.api.SelectClasses;
@@ -2993,8 +3598,11 @@ public class SuiteClass {
 
 }
 
-=== FILE: ActionFigureTest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\test\java\com\betacomics\actionFigure\ActionFigureTest.java
+==========================================
 package com.betacomics.actionFigure;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -3018,7 +3626,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.betacomics.dto.output.ResponseDTO;
+//import com.betacomics.dto.output.ResponseDTO;
 import com.betacomics.dto.input.ActionFigureReq;
 import com.betacomics.dto.output.ActionFigureDTO;
 
@@ -3083,9 +3691,9 @@ public class ActionFigureTest {
 		.andReturn();
 		
 		String json = result.getResponse().getContentAsString();
-		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
-		
-		log.debug("ActionFigure create: {}", dto.getMessage());
+//		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+//		
+//		log.debug("ActionFigure create: {}", dto.getMessage());
 	}
 	
 	@Test
@@ -3143,8 +3751,11 @@ public class ActionFigureTest {
 	} 
 }
 
-=== FILE: BoardGameTest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\test\java\com\betacomics\boardGame\BoardGameTest.java
+==========================================
 package com.betacomics.boardGame;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -3170,7 +3781,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.betacomics.dto.input.BoardGameReq;
 import com.betacomics.dto.output.BoardGameDTO;
-import com.betacomics.dto.output.ResponseDTO;
+//import com.betacomics.dto.output.ResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -3232,9 +3843,9 @@ public class BoardGameTest {
 		.andReturn();
 		
 		String json = result.getResponse().getContentAsString();
-		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
-		
-		log.debug("BoardGame create: {}", dto.getMessage());
+//		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+//		
+//		log.debug("BoardGame create: {}", dto.getMessage());
 	}
 	
 	@Test
@@ -3292,8 +3903,11 @@ public class BoardGameTest {
 	} 
 }
 
-=== FILE: ComicTest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\test\java\com\betacomics\comic\ComicTest.java
+==========================================
 package com.betacomics.comic;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -3319,7 +3933,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import com.betacomics.dto.input.ComicReq;
 import com.betacomics.dto.output.ComicDTO;
-import com.betacomics.dto.output.ResponseDTO;
+//import com.betacomics.dto.output.ResponseDTO;
 
 import lombok.extern.slf4j.Slf4j;
 import tools.jackson.core.type.TypeReference;
@@ -3379,9 +3993,9 @@ public class ComicTest {
 		.andReturn();
 		
 		String json = result.getResponse().getContentAsString();
-		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
-		
-		log.debug("Comic create: {}", dto.getMessage());
+//		ResponseDTO dto = objectMapper.readValue(json, ResponseDTO.class);
+//		
+//		log.debug("Comic create: {}", dto.getMessage());
 	}
 	
 	@Test
@@ -3440,8 +4054,11 @@ public class ComicTest {
 	
 }
 
-=== FILE: DeleteTest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\test\java\com\betacomics\delete\DeleteTest.java
+==========================================
 package com.betacomics.delete;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -3509,8 +4126,11 @@ public class DeleteTest {
 	    }
 }
 
-=== FILE: ProductTest.java ===
 
+
+==========================================
+FILE: C:\Java\workspace\betacomics\src\test\java\com\betacomics\product\ProductTest.java
+==========================================
 package com.betacomics.product;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -3584,3 +4204,6 @@ public class ProductTest {
 		log.debug(p.toString());
 	} 
 }
+
+
+
