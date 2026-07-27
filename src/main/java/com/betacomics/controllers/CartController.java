@@ -62,5 +62,5 @@ public class CartController {
         Long userId = currentUserProvider.getCurrentUserId();
         cartService.clearCart(userId);
         return ResponseEntity.noContent().build();
-    }    
+    }
 }

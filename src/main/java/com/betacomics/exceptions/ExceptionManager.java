@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -107,6 +108,30 @@ public class ExceptionManager {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
     
+    /**
+     * Credenziali errate su POST /api/v1/auth/login (BadCredentialsException e simili).
+     * Prima era il failureHandler del form login a occuparsene; ora che il login
+     * passa dall'AuthenticationManager chiamato esplicitamente nel controller,
+     * l'eccezione risale fin qui.
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiErrorResponse> handleAuthenticationException(
+            AuthenticationException e, HttpServletRequest request) {
+
+        log.warn("Authentication failure at [{}]: {}", request.getRequestURI(), e.getMessage());
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                .errorCode("INVALID_CREDENTIALS")
+                .message(messageService.get("auth.invalid.credentials"))
+                .path(request.getRequestURI())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException e, HttpServletRequest request) {
         ApiErrorResponse response = ApiErrorResponse.builder()
