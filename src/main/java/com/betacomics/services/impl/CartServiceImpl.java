@@ -14,6 +14,7 @@ import com.betacomics.dto.output.CartItemDTO;
 import com.betacomics.dto.output.ProductDTO;
 import com.betacomics.exceptions.InsufficientStockException;
 import com.betacomics.exceptions.ResourceNotFoundException;
+import com.betacomics.maps.ProductMap;
 import com.betacomics.models.Cart;
 import com.betacomics.models.CartItem;
 import com.betacomics.models.Product;
@@ -144,12 +145,7 @@ public class CartServiceImpl implements CartService {
             BigDecimal price = item.getProduct().getPrice();
             BigDecimal subTotal = price.multiply(BigDecimal.valueOf(item.getQuantity()));
 
-            
-            ProductDTO prodDTO = ProductDTO.builder()
-                    .id(item.getProduct().getId())
-                    .name(item.getProduct().getName())
-                    .price(price)
-                    .build();
+            ProductDTO prodDTO = ProductMap.buildProductDTO(item.getProduct());
 
             return CartItemDTO.builder()
                     .id(item.getId())
