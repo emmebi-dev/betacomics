@@ -50,8 +50,7 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderDetails(@PathVariable Long orderId) {
-        Long userId = currentUserProvider.getCurrentUserId();
-        OrderDTO order = orderService.getOrderDetails(userId, orderId);
+        OrderDTO order = orderService.getOrderDetails(orderId);
         return ResponseEntity.ok(order);
     }
 
