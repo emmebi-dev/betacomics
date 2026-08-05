@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.betacomics.dto.input.LoginRequest;
+import com.betacomics.dto.input.ResetPasswordRequest;
 import com.betacomics.dto.output.AuthResponseDTO;
 import com.betacomics.security.JwtService;
+import com.betacomics.services.interfaces.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +24,6 @@ import lombok.RequiredArgsConstructor;
  * Espone /api/v1/auth/login: verifica le credenziali tramite l'AuthenticationManager
  * (che a sua volta usa CustomUserDetailsService + PasswordEncoder, invariati)
  * e restituisce un JWT invece di creare una sessione HTTP.
- *
- * Non esiste piu' un endpoint di logout lato server: con token stateless
- * la "disconnessione" e' responsabilita' del client, che scarta il token.
- * Se in futuro servisse una revoca immediata, andra' introdotta una blacklist
- * (es. su Redis) dei token invalidati.
  */
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -35,6 +32,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@Valid @RequestBody LoginRequest request) {
@@ -57,5 +55,11 @@ public class AuthController {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        userService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/users/register", "/api/v1/auth/login").permitAll()
+                .requestMatchers("/api/v1/users/register", "/api/v1/auth/login", "/api/v1/auth/reset-password").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/product/**", "/comic/**", "/boardGame/**", "/actionFigure/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/comic/**", "/product/**", "/boardGame/**", "/actionFigure/**").hasRole("ADMIN")

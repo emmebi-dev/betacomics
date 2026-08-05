@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.betacomics.dto.input.RegisterRequest;
+import com.betacomics.dto.input.ResetPasswordRequest;
 import com.betacomics.dto.input.UpdateProfileRequest;
 import com.betacomics.dto.output.UserDTO;
 import com.betacomics.enums.Role;
@@ -77,6 +78,19 @@ public class UserServiceImpl implements UserService {
 
         User updatedUser = userRepository.save(user);
         return mapToUserDTO(updatedUser);
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new ResourceNotFoundException("Nessun account trovato con questi dati."));
+
+        if (!user.getEmail().equalsIgnoreCase(request.getEmail())) {
+            throw new ResourceNotFoundException("Nessun account trovato con questi dati.");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
     }
 
     private UserDTO mapToUserDTO(User user) {
