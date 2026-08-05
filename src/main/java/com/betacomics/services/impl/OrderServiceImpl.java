@@ -3,8 +3,11 @@ package com.betacomics.services.impl;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,6 +116,32 @@ public class OrderServiceImpl implements OrderService {
         return mapToOrderDTO(orderRepository.save(order));
     }
 
+	@Override
+	@Transactional(readOnly = true)
+	public Page<OrderDTO> getAllOrders(Pageable pageable, Optional<OrderStatus> status) {
+		Page<Order> page = status.map(s -> orderRepository.findByStatus(s, pageable))
+				.orElseGet(() -> orderRepository.findAll(pageable));
+
+		return page.map(this::mapToOrderDTO);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Page<OrderDTO> getUserOrders(String usernameOrEmail, Pageable pageable, Optional<OrderStatus> status) {
+		Page<Order> page = status
+		        .map(s -> orderRepository.findByUserUsernameOrEmailAndStatus(
+		                usernameOrEmail,
+		                s,
+		                pageable
+		        ))
+		        .orElseGet(() -> orderRepository.findByUserUsernameOrEmail(
+		                usernameOrEmail,
+		                pageable
+		        ));
+
+		return page.map(this::mapToOrderDTO);
+	}
+
     //TO-DO move to OrderMap
     private OrderDTO mapToOrderDTO(Order order) {
         List<OrderItemDTO> itemDTOs = order.getItems().stream().map(item -> {
@@ -136,10 +165,13 @@ public class OrderServiceImpl implements OrderService {
         return OrderDTO.builder()
                 .id(order.getId())
                 .userId(order.getUser().getId())
+                .username(order.getUser().getUsername())
+                .email(order.getUser().getEmail())
                 .orderDate(order.getOrderDate())
                 .totalPrice(order.getTotalPrice())
                 .status(order.getStatus())
                 .items(itemDTOs)
                 .build();
     }
+    
 }

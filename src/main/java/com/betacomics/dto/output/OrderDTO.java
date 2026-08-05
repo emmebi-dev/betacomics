@@ -15,6 +15,8 @@ import lombok.*;
 public class OrderDTO {
     private Long id;
     private Long userId;
+    private String username;
+    private String email;
     private LocalDateTime orderDate;
     private BigDecimal totalPrice;
     private OrderStatus status;
