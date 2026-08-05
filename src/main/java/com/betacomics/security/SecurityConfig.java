@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/comic/**", "/product/**", "/boardGame/**", "/actionFigure/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/comic/**", "/product/**", "/boardGame/**", "/actionFigure/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT, "/api/v1/orders/*/status").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/api/v1/orders/list", "/api/v1/orders/listByUser").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex
