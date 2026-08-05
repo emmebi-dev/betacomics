@@ -15,7 +15,7 @@ public interface OrderService {
     
     OrderDTO checkout(Long userId, CheckoutRequest request);
     
-    OrderDTO getOrderDetails(Long userId, Long orderId);
+    OrderDTO getOrderDetails(Long orderId);
     
     List<OrderDTO> getOrderHistory(Long userId);
     
